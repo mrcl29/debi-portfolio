@@ -1,0 +1,82 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang as any);
+---
+
+<div
+    id="intro-overlay"
+    class="fixed inset-0 z-[100] bg-[var(--background)] flex items-center justify-center hidden pointer-events-none"
+>
+    <div class="w-250">
+        <h1
+            id="intro-text"
+            class="text-[var(--primary)] text-3xl md:text-6xl font-bold text-center px-4 opacity-0 transition-opacity duration-500"
+        >
+            <!-- El texto se inyectará vía JS -->
+        </h1>
+    </div>
+</div>
+
+<script is:inline define:vars={{ phrases: t.intro.phrases }}>
+    const overlay = document.getElementById("intro-overlay");
+    const textElement = document.getElementById("intro-text");
+
+    // Usamos sessionStorage para que la animación salga una vez por sesión.
+    // Esto permite que si el usuario cierra y vuelve a abrir el navegador, la vuelva a ver,
+    // pero no le moleste si solo recarga la página.
+    const hasSeenIntro = sessionStorage.getItem("hasSeenIntro");
+
+    if (!hasSeenIntro && overlay && textElement) {
+        // Activamos el overlay y bloqueamos interacciones
+        overlay.classList.remove("hidden");
+        overlay.style.pointerEvents = "auto";
+
+        const typeText = async (text) => {
+            textElement.textContent = "";
+            textElement.style.opacity = "1";
+
+            // Efecto de escritura carácter a carácter
+            for (let i = 0; i < text.length; i++) {
+                textElement.textContent += text.charAt(i);
+                await new Promise((r) => setTimeout(r, 50)); // Velocidad de escritura (ms)
+            }
+        };
+
+        const fadeOutText = async () => {
+            textElement.style.opacity = "0";
+            await new Promise((r) => setTimeout(r, 500)); // Esperar a que termine la transición CSS
+        };
+
+        const runAnimation = async () => {
+            await new Promise((r) => setTimeout(r, 500)); // Pequeña pausa inicial
+
+            // --- Frase 1 ---
+            await typeText(phrases[0]);
+            await new Promise((r) => setTimeout(r, 1500)); // Tiempo de lectura
+            await fadeOutText();
+
+            // --- Frase 2 ---
+            await typeText(phrases[1]);
+            await new Promise((r) => setTimeout(r, 2000)); // Tiempo de lectura
+            await fadeOutText();
+
+            // --- Finalizar ---
+            // Desvanecer el overlay para revelar el contenido sutilmente
+            overlay.style.transition = "opacity 1s ease-out";
+            overlay.style.opacity = "0";
+
+            // Marcar como visto
+            sessionStorage.setItem("hasSeenIntro", "true");
+
+            // Eliminar del flujo visual tras la animación
+            setTimeout(() => {
+                overlay.style.display = "none";
+                overlay.style.pointerEvents = "none";
+            }, 1000);
+        };
+
+        runAnimation();
+    }
+</script>

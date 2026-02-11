@@ -1,4 +1,7 @@
 ---
+import { ownerName } from '@/constants/constants';
+import Navbar from '@/components/Navbar.astro';
+import IntroAnimation from '@/components/IntroAnimation.astro';
 import '@/styles/global.css';
 
 interface Props {
@@ -17,9 +20,11 @@ const { title, lang } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
+		<title>{title} | {ownerName} Portfolio</title>
 	</head>
 	<body>
+		<IntroAnimation />
+		<Navbar />
 		<slot />
 	</body>
 </html>

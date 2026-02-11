@@ -1,33 +1,89 @@
 // src/i18n/ui.ts
+import { fullOwnerName } from "@/constants/constants";
+import type langDict from "./types/langDict";
 
 export const languages = {
-  es: 'Español',
-  en: 'English',
-  cat: 'Catalan',
+    es: 'Español',
+    en: 'English',
+    cat: 'Catalan',
 };
 
 export const defaultLang = 'es';
 
-export const ui = {
-  es: {
-    'nav.home': 'Inicio',
-    'nav.about': 'Sobre Nosotros',
-    'hero.title': 'Bienvenido a mi proyecto Bun + Astro',
-    'hero.subtitle': 'Este texto cambia automáticamente.',
-    'button.click': 'Haz click aquí',
-  },
-  en: {
-    'nav.home': 'Home',
-    'nav.about': 'About',
-    'hero.title': 'Welcome to my Bun + Astro project',
-    'hero.subtitle': 'This text translates automatically.',
-    'button.click': 'Click here',
-  },
-  cat: {
-    'nav.home': 'Accueil',
-    'nav.about': 'À propos',
-    'hero.title': 'Bienvenue sur mon projet Bun + Astro',
-    'hero.subtitle': 'Ce texte change automatiquement.',
-    'button.click': 'Cliquez ici',
-  }
-} as const;
+export const ui: Record<keyof typeof languages, langDict> = {
+    es: {
+        intro: {
+            phrases: ["Hola, mi nombre es " + fullOwnerName + "...", "...soy diseñadora gráfica y directora de arte..."],
+        },
+        pages: {
+            index: {
+                title: 'Inicio'
+            },
+            projects: {
+                title: 'Proyectos'
+            },
+            aboutMe: {
+                title: 'Sobre Mí'
+            },
+            contact: {
+                title: 'Contacto'
+            },
+        },
+        nav: {
+            index: 'INICIO',
+            projects: 'PROYECTOS',
+            aboutMe: 'SOBRE MÍ',
+            contact: 'CONTACTO',
+        },
+    },
+    en: {
+        intro: {
+            phrases: ["Hello, my name is " + fullOwnerName + "...", "...I am a graphic designer and art director..."],
+        },
+        pages: {
+            index: {
+                title: 'Home',
+            },
+            projects: {
+                title: 'Projects',
+            },
+            aboutMe: {
+                title: 'About Me',
+            },
+            contact: {
+                title: 'Contact',
+            },
+        },
+        nav: {
+            index: 'HOME',
+            projects: 'PROJECTS',
+            aboutMe: 'ABOUT ME',
+            contact: 'CONTACT',
+        },
+    },
+    cat: {
+        intro: {
+            phrases: ["Hola, el meu nom és " + fullOwnerName + "...", "...sóc dissenyadora gràfica i directora d'art..."],
+        },
+        pages: {
+            index: {
+                title: 'Inici',
+            },
+            projects: {
+                title: 'Projectes',
+            },
+            aboutMe: {
+                title: 'Sobre Mi',
+            },
+            contact: {
+                title: 'Contacte',
+            },
+        },
+        nav: {
+            index: 'INICI',
+            projects: 'PROJECTES',
+            aboutMe: 'SOBRE MI',
+            contact: 'CONTACTE',
+        },
+    },
+};

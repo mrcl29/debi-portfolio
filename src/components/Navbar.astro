@@ -1,0 +1,41 @@
+---
+import { getLangFromUrl, useTranslations } from '@/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Mapeo de las claves del menú a las rutas de archivo reales
+const routes: Record<keyof typeof t.nav, string> = {
+  index: `/${lang}/`,
+  projects: `/${lang}/Projects`,
+  aboutMe: `/${lang}/AboutMe`,
+  contact: `/${lang}/Contact`,
+};
+
+const { pathname } = Astro.url;
+// Normalizamos la URL actual (quitando slash final) para comparar correctamente
+const currentPath = pathname.replace(/\/$/, '');
+---
+
+<nav class="fixed top-0 left-20 w-full z-50 p-8 flex justify-start items-center bg-transparent pointer-events-none">
+  <ul class="flex gap-15 list-none m-0 p-0 pointer-events-auto">
+    {
+      Object.entries(t.nav).map(([key, label]) => {
+        const routeKey = key as keyof typeof t.nav;
+        const href = routes[routeKey];
+        const normalizedHref = href.replace(/\/$/, '');
+
+        // Si la ruta coincide con la actual, no mostramos el enlace
+        if (normalizedHref === currentPath) return null;
+
+        return (
+          <li>
+            <a href={href} class="text-[var(--primary)] text-lg no-underline transition-opacity duration-300 hover:opacity-70">
+              {label}
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>

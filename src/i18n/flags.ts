@@ -1,6 +1,6 @@
-import es from '@/assets/flags/es.svg';
-import en from '@/assets/flags/en.svg';
-import cat from '@/assets/flags/cat.svg';
+import es from '@/i18n/assets/es.svg';
+import en from '@/i18n/assets/en.svg';
+import cat from '@/i18n/assets/cat.svg';
 
 export const flags = {
   es,
