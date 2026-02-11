@@ -1,0 +1,31 @@
+---
+// src/pages/[lang]/index.astro
+import Layout from '@/layouts/Layout.astro';
+import { languages } from '@/i18n/ui';
+import { useTranslations } from '@/i18n/utils';
+import LanguagePicker from '@/components/LanguagePicker.astro';
+
+export function getStaticPaths() {
+  return Object.keys(languages).map((lang) => {
+      return { params: { lang } };
+  });
+}
+
+const { lang } = Astro.params;
+const t = useTranslations(lang as any);
+---
+
+<Layout title={t('hero.title')} lang={lang as string}>
+    <main>
+        <LanguagePicker />
+        <hr />
+        <h1>{t('hero.title')}</h1>
+        <p>{t('hero.subtitle')}</p>
+        <button>{t('button.click')}</button>
+    </main>
+</Layout>
+
+<style>
+    main { padding: 2rem; max-width: 800px; margin: 0 auto; }
+    button { background: #000; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+</style>
