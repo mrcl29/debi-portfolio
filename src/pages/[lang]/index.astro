@@ -4,6 +4,7 @@ import Layout from '@/layouts/Layout.astro';
 import { languages } from '@/i18n/ui';
 import { useTranslations } from '@/i18n/utils';
 import LanguagePicker from '@/components/LanguagePicker.astro';
+import ThemeToggle from '@/components/ThemeToggle.astro';
 
 export function getStaticPaths() {
   return Object.keys(languages).map((lang) => {
@@ -22,10 +23,6 @@ const t = useTranslations(lang as any);
         <h1>{t('hero.title')}</h1>
         <p>{t('hero.subtitle')}</p>
         <button>{t('button.click')}</button>
+        <ThemeToggle></ThemeToggle>
     </main>
 </Layout>
-
-<style>
-    main { padding: 2rem; max-width: 800px; margin: 0 auto; }
-    button { background: #000; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-</style>

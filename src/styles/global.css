@@ -1,7 +1,31 @@
+@import "tailwindcss";
+@import '@fontsource/poppins';
+
+ @theme {
+  --color-primary: var(--primary);
+  --color-background: var(--background);
+}
+
+:root {
+  --primary: #EB0000;
+  --background: #F6EFEF;
+}
+
+/* Modo oscuro activado por clase .dark en el elemento html */
+.dark {
+  --primary: #FFFFFF;
+  --background: #000000;
+}
+
 html,
 body {
 	margin: 0;
+	font-family: 'Poppins', sans-serif;
 	width: 100%;
 	height: 100%;
-	font-family: system-ui, sans-serif;
+	font-weight: 400;
+
+	background-color: var(--background);
+	color: var(--primary);
+	transition: background-color 0.3s ease, color 0.3s ease;
 }

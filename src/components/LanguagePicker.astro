@@ -1,24 +1,12 @@
 ---
 // src/components/LanguagePicker.astro
 import { languages } from '@/i18n/ui';
+import { flags } from '@/i18n/flags';
 import { getLangFromUrl } from '@/i18n/utils';
 import { Image } from 'astro:assets';
 
-// 1. Importa tus banderas
-import esFlag from '@/assets/flags/es.svg';
-import enFlag from '@/assets/flags/en.svg';
-import catFlag from '@/assets/flags/cat.svg';
-
-// 2. Mapeo de idiomas a imágenes
-const flags = {
-  es: esFlag,
-  en: enFlag,
-  cat: catFlag,
-};
-
-// TRUCO DE TYPESCRIPT:
-// Definimos un tipo que sea exactamente las claves de nuestro objeto flags ('es' | 'en' | 'cat')
-type Lang = keyof typeof flags;
+// Definimos el tipo basado en las claves de la configuración central de idiomas
+type Lang = keyof typeof languages;
 
 const currentLang = getLangFromUrl(Astro.url) as Lang; // Forzamos el tipo aquí por seguridad
 
@@ -30,33 +18,50 @@ const { pathname } = Astro.url;
 const subpath = pathname.replace(new RegExp(`^/${currentLang}`), '');
 ---
 
-<div class="language-selector">
-  <button id="lang-menu-button" aria-label="Cambiar idioma" aria-expanded="false">
-    <div class="flag-container">
+<div class="relative inline-block text-left">
+  <button
+    id="lang-menu-button"
+    aria-label="Cambiar idioma"
+    aria-expanded="false"
+    class="bg-transparent border-none cursor-pointer p-0 transition-transform duration-200 ease-in-out hover:scale-110"
+  >
+    <div class="w-8 h-8 rounded-full overflow-hidden shadow-sm">
       <Image
         src={flags[currentLang]}
         alt={`Bandera ${languages[currentLang]}`}
         width={30}
         height={30}
-        class="flag-img"
+        class="w-full h-full object-cover"
+        loading="eager"
       />
     </div>
   </button>
 
-  <ul id="lang-menu-list" class="dropdown hidden">
+  <ul
+    id="lang-menu-list"
+    class="absolute top-[120%] right-0 bg-[var(--background)] border border-black/5 dark:border-white/10 rounded-lg shadow-xl py-2 list-none min-w-[150px] z-10 transition-all duration-200 ease-in-out opacity-100 translate-y-0 [&.menu-closed]:opacity-0 [&.menu-closed]:-translate-y-2 [&.menu-closed]:pointer-events-none menu-closed"
+  >
     {Object.entries(languages).map(([lang, label]) => {
-      // SOLUCIÓN 2: Convertimos la variable 'lang' (que es string) al tipo 'Lang'
       const langKey = lang as Lang;
+      const isActive = langKey === currentLang;
 
       return (
         <li>
-          <a href={`/${langKey}${subpath}`} class={langKey === currentLang ? 'active' : ''}>
+          <a
+            href={`/${langKey}${subpath}`}
+            class={`flex items-center gap-2 px-4 py-2 no-underline text-sm transition-colors duration-200 text-[var(--primary)] ${
+              isActive
+                ? 'font-bold bg-black/5 dark:bg-white/10'
+                : 'hover:bg-black/5 dark:hover:bg-white/10'
+            }`}
+          >
             <Image
               src={flags[langKey]}
               alt={`Bandera ${label}`}
               width={24}
               height={24}
-              class="flag-mini"
+              class="rounded"
+              loading="eager"
             />
             <span>{label}</span>
           </a>
@@ -65,94 +70,6 @@ const subpath = pathname.replace(new RegExp(`^/${currentLang}`), '');
     })}
   </ul>
 </div>
-
-<style>
-  /* Contenedor principal */
-  .language-selector {
-    position: relative;
-    display: inline-block;
-  }
-
-  /* Botón Trigger (Bandera sola) */
-  #lang-menu-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    transition: transform 0.2s ease;
-  }
-
-  #lang-menu-button:hover {
-    transform: scale(1.1); /* Efecto sutil al pasar el mouse */
-  }
-
-  /* Estilo de la bandera circular */
-  .flag-container {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Sombra suave */
-  }
-
-  .flag-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* Menú Desplegable */
-  .dropdown {
-    position: absolute;
-    top: 120%; /* Un poco separado del botón */
-    right: 0; /* Alineado a la derecha */
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    padding: 8px 0;
-    list-style: none;
-    min-width: 150px;
-    z-index: 100;
-
-    /* Animación de entrada */
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-
-  /* Estado oculto */
-  .dropdown.hidden {
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
-  }
-
-  /* Items de la lista */
-  .dropdown li a {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 16px;
-    text-decoration: none;
-    color: #333;
-    font-size: 0.9rem;
-    transition: background 0.2s;
-  }
-
-  .dropdown li a:hover {
-    background-color: #f3f4f6;
-  }
-
-  .dropdown li a.active {
-    font-weight: bold;
-    color: #ff5d01;
-    background-color: #fff0e6;
-  }
-
-  .flag-mini {
-    border-radius: 4px; /* Las banderas de la lista un poco redondeadas */
-  }
-</style>
 
 <script>
   // Lógica para abrir/cerrar y cerrar al hacer click fuera
@@ -166,13 +83,13 @@ const subpath = pathname.replace(new RegExp(`^/${currentLang}`), '');
       const isExpanded = button.getAttribute('aria-expanded') === 'true';
 
       button.setAttribute('aria-expanded', !isExpanded ? 'true' : 'false');
-      list.classList.toggle('hidden');
+      list.classList.toggle('menu-closed');
     });
 
     // Cerrar al hacer click fuera
     document.addEventListener('click', (e) => {
       if (!button.contains(e.target as Node) && !list.contains(e.target as Node)) {
-        list.classList.add('hidden');
+        list.classList.add('menu-closed');
         button.setAttribute('aria-expanded', 'false');
       }
     });
@@ -180,7 +97,7 @@ const subpath = pathname.replace(new RegExp(`^/${currentLang}`), '');
     // Cerrar al presionar Escape (Accesibilidad)
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        list.classList.add('hidden');
+        list.classList.add('menu-closed');
         button.setAttribute('aria-expanded', 'false');
       }
     });

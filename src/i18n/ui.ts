@@ -8,8 +8,6 @@ export const languages = {
 
 export const defaultLang = 'es';
 
-// Tus traducciones.
-// TIP: Para escalar, podrías separar esto en archivos JSON por idioma si crece mucho.
 export const ui = {
   es: {
     'nav.home': 'Inicio',
@@ -32,4 +30,4 @@ export const ui = {
     'hero.subtitle': 'Ce texte change automatiquement.',
     'button.click': 'Cliquez ici',
   }
-} as const; // 'as const' es crucial para TypeScript
+} as const;
