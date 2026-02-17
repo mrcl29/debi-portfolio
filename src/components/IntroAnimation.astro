@@ -54,12 +54,12 @@ const t = useTranslations(lang as any);
 
             // --- Frase 1 ---
             await typeText(phrases[0]);
-            await new Promise((r) => setTimeout(r, 1500)); // Tiempo de lectura
+            await new Promise((r) => setTimeout(r, 600)); // Tiempo de lectura
             await fadeOutText();
 
             // --- Frase 2 ---
             await typeText(phrases[1]);
-            await new Promise((r) => setTimeout(r, 2000)); // Tiempo de lectura
+            await new Promise((r) => setTimeout(r, 600)); // Tiempo de lectura
             await fadeOutText();
 
             // --- Finalizar ---
