@@ -3,6 +3,10 @@ dist/
 
 # generated types
 .astro/
+.vscode/
+.gemini/
+.agents/
+skills-lock.json
 
 # dependencies
 node_modules/
