@@ -27,6 +27,8 @@ const { title, lang } = Astro.props;
 		<IntroAnimation />
 		<Header />
 		<Navbar />
-		<slot />
+		<main class="relative">
+			<slot />
+		</main>
 	</body>
 </html>

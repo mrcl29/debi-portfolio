@@ -2,6 +2,7 @@
 import { languages } from '@/i18n/ui';
 import { useTranslations } from '@/i18n/utils';
 import MainLayout from '@/layouts/MainLayout.astro';
+import SectionNavBar from '@/components/SectionNavBar.astro';
 
 export function getStaticPaths() {
   return Object.keys(languages).map((lang) => {
@@ -14,7 +15,8 @@ const t = useTranslations(lang as any);
 ---
 
 <MainLayout title={t.pages.projects.title} lang={lang as string}>
-    <main>
-        Esto es Projects
-    </main>
+    <SectionNavBar sections={t.pages.projects.sections} />
+    <div class="flex flex-col p-15">
+        <div class="h-[50vh]"></div>
+    </div>
 </MainLayout>

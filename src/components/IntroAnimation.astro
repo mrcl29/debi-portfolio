@@ -7,12 +7,12 @@ const t = useTranslations(lang as any);
 
 <div
     id="intro-overlay"
-    class="fixed inset-0 z-[100] bg-[var(--background)] flex items-center justify-center hidden pointer-events-none"
+    class="fixed inset-0 z-100 bg-(--background) items-center justify-center hidden pointer-events-none"
 >
     <div class="w-250">
         <h1
             id="intro-text"
-            class="text-[var(--primary)] text-3xl md:text-6xl font-bold text-center px-4 opacity-0 transition-opacity duration-500"
+            class="text-(--primary) text-3xl md:text-6xl font-bold text-center px-4 opacity-0 transition-opacity duration-500"
         >
             <!-- El texto se inyectará vía JS -->
         </h1>

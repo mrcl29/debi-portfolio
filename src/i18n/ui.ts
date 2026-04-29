@@ -1,6 +1,7 @@
 // src/i18n/ui.ts
 import { fullOwnerName } from "@/constants/constants";
 import type langDict from "./types/langDict";
+import Branding from "@/components/sections/Branding.astro";
 
 export const languages = {
     es: 'Español',
@@ -20,7 +21,13 @@ export const ui: Record<keyof typeof languages, langDict> = {
                 title: 'Inicio'
             },
             projects: {
-                title: 'Proyectos'
+                title: 'Proyectos',
+                sections: [
+                    { id: 'branding', title: "MARCA", component: Branding },
+                    { id: 'events', title: "EVENTOS", component: Branding  },
+                    { id: 'editorial', title: "EDITORIAL", component: Branding  },
+                    { id: 'art-direction', title: "D. DE ARTE", component: Branding  }
+                ]
             },
             aboutMe: {
                 title: 'Sobre Mí'
@@ -49,6 +56,12 @@ export const ui: Record<keyof typeof languages, langDict> = {
             },
             projects: {
                 title: 'Projects',
+                sections: [
+                    { id: 'branding', title: "BRANDING", component: Branding },
+                    { id: 'events', title: "EVENTS", component: Branding  },
+                    { id: 'editorial', title: "EDITORIAL", component: Branding  },
+                    { id: 'art-direction', title: "ART DIRECTION", component: Branding  }
+                ]
             },
             aboutMe: {
                 title: 'About Me',
@@ -77,6 +90,12 @@ export const ui: Record<keyof typeof languages, langDict> = {
             },
             projects: {
                 title: 'Projectes',
+                sections: [
+                    { id: 'branding', title: "MARCA", component: Branding },
+                    { id: 'events', title: "EVENTS", component: Branding  },
+                    { id: 'editorial', title: "EDITORIAL", component: Branding  },
+                    { id: 'art-direction', title: "D. D'ART", component: Branding  }
+                ]
             },
             aboutMe: {
                 title: 'Sobre Mi',

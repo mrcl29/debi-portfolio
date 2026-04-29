@@ -39,7 +39,7 @@ const subpath = pathname.replace(new RegExp(`^/${currentLang}`), '');
 
   <ul
     id="lang-menu-list"
-    class="absolute top-[120%] right-0 bg-[var(--background)] border border-black/5 dark:border-white/10 rounded-lg shadow-xl py-2 list-none min-w-[150px] z-10 transition-all duration-200 ease-in-out opacity-100 translate-y-0 [&.menu-closed]:opacity-0 [&.menu-closed]:-translate-y-2 [&.menu-closed]:pointer-events-none menu-closed"
+    class="absolute top-[120%] right-0 bg-(--background) border border-black/5 dark:border-white/10 rounded-lg shadow-xl py-2 list-none min-w-37.5 z-10 transition-all duration-200 ease-in-out opacity-100 translate-y-0 [&.menu-closed]:opacity-0 [&.menu-closed]:-translate-y-2 [&.menu-closed]:pointer-events-none menu-closed"
   >
     {Object.entries(languages).map(([lang, label]) => {
       const langKey = lang as Lang;
@@ -49,7 +49,7 @@ const subpath = pathname.replace(new RegExp(`^/${currentLang}`), '');
         <li>
           <a
             href={`/${langKey}${subpath}`}
-            class={`flex items-center gap-2 px-4 py-2 no-underline text-sm transition-colors duration-200 text-[var(--primary)] ${
+            class={`flex items-center gap-2 px-4 py-2 no-underline text-sm transition-colors duration-200 text-(--primary) ${
               isActive
                 ? 'font-bold bg-black/5 dark:bg-white/10'
                 : 'hover:bg-black/5 dark:hover:bg-white/10'

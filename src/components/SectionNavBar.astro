@@ -1,0 +1,127 @@
+---
+// src/components/SectionNavBar.astro
+import type { Section } from '@/i18n/types/langDict';
+
+interface Props {
+  sections: Section[];
+}
+
+const { sections } = Astro.props as Props;
+---
+
+<nav class="absolute top-0 left-0 h-full w-full z-40 p-15 flex flex-col justify-end bg-transparent pointer-events-none overflow-hidden animate-in">
+  <ul class="flex flex-col list-none m-0 p-0 pointer-events-auto gap-8">
+    {
+      sections?.map((section) => {
+        const SectionComponent = section.component;
+        return (
+          <li class="section-item group" data-id={section.id}>
+            <span class="section-title text-(--primary) text-[7vw] md:text-[7vw] font-light leading-[0.8] uppercase block tracking-tighter hover:font-extrabold transition-all duration-300 cursor-pointer">
+              {section.title}
+            </span>
+            <div class="section-content max-h-0 opacity-0 overflow-hidden transition-all duration-500 ease-in-out">
+              {SectionComponent && <SectionComponent />}
+            </div>
+          </li>
+        )
+      })
+    }
+  </ul>
+</nav>
+
+<script define:vars={{ sections }}>
+  function initSections() {
+    const items = document.querySelectorAll('.section-item');
+
+    items.forEach(item => {
+      const title = item.querySelector('.section-title');
+      const content = item.querySelector('.section-content');
+
+      const toggle = (force) => {
+        const isOpen = force !== undefined ? force : content.classList.contains('max-h-0');
+
+        if (isOpen) {
+          // Close other sections first
+          items.forEach(otherItem => {
+            if (otherItem !== item) {
+              const otherTitle = otherItem.querySelector('.section-title');
+              const otherContent = otherItem.querySelector('.section-content');
+              otherContent.classList.add('max-h-0', 'opacity-0');
+              otherContent.classList.remove('max-h-[500px]', 'opacity-100', 'mt-4');
+              otherTitle?.classList.remove('font-extrabold');
+            }
+          });
+
+          content.classList.remove('max-h-0', 'opacity-0');
+          content.classList.add('max-h-[500px]', 'opacity-100', 'mt-4');
+          title?.classList.add('font-extrabold');
+        } else {
+          content.classList.add('max-h-0', 'opacity-0');
+          content.classList.remove('max-h-[500px]', 'opacity-100', 'mt-4');
+          title?.classList.remove('font-extrabold');
+        }
+      };
+
+      title?.addEventListener('click', () => toggle());
+
+      // Store toggle function on the element for scroll access
+      (item)._toggleSection = toggle;
+      });
+
+      // Scroll logic: detect when specific content areas are reached
+      const main = document.querySelector('main');
+      if (main) {
+      const observerOptions = {
+        root: main,
+        // Trigger when the section occupies a good chunk of the center/top
+        rootMargin: '-10% 0px -70% 0px',
+        threshold: 0
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const id = entry.target.id;
+          const item = document.querySelector(`.section-item[data-id="${id}"]`);
+
+          if (entry.isIntersecting) {
+            if (item && item._toggleSection) {
+              item._toggleSection(true);
+            }
+          } else {
+            // Only close if it's the one currently open (to avoid redundant calls)
+            if (item && item._toggleSection && item.querySelector('.section-title').classList.contains('font-extrabold')) {
+              item._toggleSection(false);
+            }
+          }
+        });
+      }, observerOptions);
+
+      // Observe elements in the main content that have matching IDs
+      sections.forEach(section => {
+        const target = document.getElementById(section.id);
+        if (target) observer.observe(target);
+      });
+    }
+  }
+
+  // Init on load and after swaps
+  initSections();
+  document.addEventListener('astro:after-swap', initSections);
+</script>
+
+<style>
+  .animate-in {
+    animation: fadeInSlide 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes fadeInSlide {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
