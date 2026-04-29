@@ -1,0 +1,10 @@
+---
+import { getLangFromUrl } from '@/i18n/utils';
+const lang = getLangFromUrl(Astro.url);
+---
+
+<header class="fixed top-0 left-0 z-50 p-6 pointer-events-auto">
+  <a href={`/${lang}/`} class="text-(--primary) text-2xl font-extrabold no-underline uppercase tracking-tighter hover:opacity-70 transition-opacity duration-300">
+    VOL.2
+  </a>
+</header>

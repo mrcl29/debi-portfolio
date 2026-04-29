@@ -1,0 +1,22 @@
+---
+// src/pages/[lang]/index.astro
+import MainLayout from '@/layouts/MainLayout.astro';
+import { languages } from '@/i18n/ui';
+import { useTranslations } from '@/i18n/utils';
+import LanguagePicker from '@/components/LanguagePicker.astro';
+import ThemeToggle from '@/components/ThemeToggle.astro';
+
+export function getStaticPaths() {
+  return Object.keys(languages).map((lang) => {
+      return { params: { lang } };
+  });
+}
+
+const { lang } = Astro.params;
+const t = useTranslations(lang as any);
+---
+
+<MainLayout title={t.pages.inspo.title} lang={lang as string}>
+    <main>
+    </main>
+</MainLayout>

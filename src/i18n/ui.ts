@@ -28,12 +28,15 @@ export const ui: Record<keyof typeof languages, langDict> = {
             contact: {
                 title: 'Contacto'
             },
+            inspo: {
+                title: 'Inspo'
+            },
         },
         nav: {
-            index: 'INICIO',
             projects: 'PROYECTOS',
             aboutMe: 'SOBRE MÍ',
             contact: 'CONTACTO',
+            inspo: 'INSPO',
         },
     },
     en: {
@@ -42,7 +45,7 @@ export const ui: Record<keyof typeof languages, langDict> = {
         },
         pages: {
             index: {
-                title: 'Home',
+                title: 'Home'
             },
             projects: {
                 title: 'Projects',
@@ -53,12 +56,15 @@ export const ui: Record<keyof typeof languages, langDict> = {
             contact: {
                 title: 'Contact',
             },
+            inspo: {
+                title: 'Inspo'
+            },
         },
         nav: {
-            index: 'HOME',
             projects: 'PROJECTS',
             aboutMe: 'ABOUT ME',
             contact: 'CONTACT',
+            inspo: 'INSPO',
         },
     },
     cat: {
@@ -67,7 +73,7 @@ export const ui: Record<keyof typeof languages, langDict> = {
         },
         pages: {
             index: {
-                title: 'Inici',
+                title: 'Inici'
             },
             projects: {
                 title: 'Projectes',
@@ -78,12 +84,15 @@ export const ui: Record<keyof typeof languages, langDict> = {
             contact: {
                 title: 'Contacte',
             },
+            inspo: {
+                title: 'Inspo'
+            },
         },
         nav: {
-            index: 'INICI',
             projects: 'PROJECTES',
             aboutMe: 'SOBRE MI',
             contact: 'CONTACTE',
+            inspo: 'INSPO',
         },
     },
 };

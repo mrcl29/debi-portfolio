@@ -15,11 +15,14 @@ export default interface langDict {
         contact: {
             title: string
         },
+        inspo: {
+            title: string
+        },
     },
     nav: {
-        index: string,
         projects: string,
         aboutMe: string,
         contact: string,
+        inspo: string,
     }
 }

@@ -1,9 +1,87 @@
 @import "tailwindcss";
-@import '@fontsource/poppins';
+
+/* PP Neue Machina INKTRAP */
+@font-face {
+  font-family: 'PP Neue Machina Inktrap';
+  src: url('../assets/fonts/PPNeueMachina-InktrapLight.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'PP Neue Machina Inktrap';
+  src: url('../assets/fonts/PPNeueMachina-InktrapLightItalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'PP Neue Machina Inktrap';
+  src: url('../assets/fonts/PPNeueMachina-InktrapRegular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'PP Neue Machina Inktrap';
+  src: url('../assets/fonts/PPNeueMachina-InktrapRegularItalic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'PP Neue Machina Inktrap';
+  src: url('../assets/fonts/PPNeueMachina-InktrapUltrabold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'PP Neue Machina Inktrap';
+  src: url('../assets/fonts/PPNeueMachina-InktrapUltraboldItalic.otf') format('opentype');
+  font-weight: 800;
+  font-style: italic;
+}
+
+/* PP Neue Machina PLAIN */
+@font-face {
+  font-family: 'PP Neue Machina Plain';
+  src: url('../assets/fonts/PPNeueMachina-PlainLight.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'PP Neue Machina Plain';
+  src: url('../assets/fonts/PPNeueMachina-PlainLightItalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'PP Neue Machina Plain';
+  src: url('../assets/fonts/PPNeueMachina-PlainRegular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'PP Neue Machina Plain';
+  src: url('../assets/fonts/PPNeueMachina-PlainRegularItalic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'PP Neue Machina Plain';
+  src: url('../assets/fonts/PPNeueMachina-PlainUltrabold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'PP Neue Machina Plain';
+  src: url('../assets/fonts/PPNeueMachina-PlainUltraboldItalic.otf') format('opentype');
+  font-weight: 800;
+  font-style: italic;
+}
 
  @theme {
   --color-primary: var(--primary);
   --color-background: var(--background);
+  --font-sans: 'PP Neue Machina Inktrap', sans-serif;
+  --font-ink: 'PP Neue Machina Inktrap', sans-serif;
+  --font-plain: 'PP Neue Machina Plain', sans-serif;
 }
 
 :root {
@@ -20,7 +98,7 @@
 html,
 body {
 	margin: 0;
-	font-family: 'Poppins', sans-serif;
+	font-family: 'PP Neue Machina Inktrap', sans-serif;
 	width: 100%;
 	height: 100%;
 	font-weight: 400;
