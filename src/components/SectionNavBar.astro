@@ -119,6 +119,18 @@ const { sections } = Astro.props as Props;
           content.classList.remove('max-h-0', 'opacity-0');
           content.style.maxHeight = content.scrollHeight + 'px';
           title?.classList.add('font-extrabold');
+
+          // Scroll al tope del item pulsado
+          const main = document.querySelector('main');
+          if (main) {
+            // Un pequeño retraso para asegurar que el DOM se ha actualizado
+            setTimeout(() => {
+              main.scrollTo({
+                top: item.offsetTop,
+                behavior: 'smooth'
+              });
+            }, 50);
+          }
         } else {
           content.classList.add('max-h-0', 'opacity-0');
           content.style.maxHeight = '0px';

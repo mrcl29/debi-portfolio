@@ -15,6 +15,31 @@ export interface ProjectsContent extends PageContent {
   sections: Section[];
 }
 
+export interface ContactContent extends PageContent {
+  email?: string;
+  socials?: {
+    instagram?: string;
+    linkedin?: string;
+    behance?: string;
+  };
+}
+
+export interface AboutMeContent extends PageContent {
+  bio: string[];
+  experience?: {
+    year: string;
+    title: string;
+    description: string;
+  }[];
+}
+
+export interface InspoContent extends PageContent {
+  images?: {
+    url: string;
+    caption?: string;
+  }[];
+}
+
 /**
  * Define aquí todas las páginas del sitio.
  * Esto permite centralizar la estructura y derivar otros tipos automáticamente.
@@ -22,9 +47,9 @@ export interface ProjectsContent extends PageContent {
 export interface PageMap {
   index: PageContent;
   projects: ProjectsContent;
-  aboutMe: PageContent;
-  contact: PageContent;
-  inspo: PageContent;
+  aboutMe: AboutMeContent;
+  contact: ContactContent;
+  inspo: InspoContent;
 }
 
 /**

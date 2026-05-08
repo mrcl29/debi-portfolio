@@ -14,5 +14,80 @@ const t = useTranslations(lang as any);
 ---
 
 <MainLayout title={t.pages.contact.title} lang={lang as string}>
-    Esto es Contact
+    <div class="flex flex-col justify-end min-h-screen p-16 animate-in">
+        <div class="spacer grow"></div>
+        
+        <div class="contact-content">
+            <h2 class="text-(--primary) text-[4vw] font-light uppercase tracking-tighter mb-4 opacity-70">
+                {t.pages.contact.title}
+            </h2>
+            
+            <a 
+                href={`mailto:${t.pages.contact.email}`} 
+                class="contact-link text-(--primary) text-[8vw] font-bold leading-[0.8] uppercase block tracking-tighter hover:font-extrabold transition-all duration-300 break-words mb-12"
+                data-text={t.pages.contact.email}
+            >
+                {t.pages.contact.email}
+            </a>
+
+            <div class="flex flex-col gap-4">
+                {t.pages.contact.socials?.instagram && (
+                    <a href={t.pages.contact.socials.instagram} target="_blank" rel="noopener noreferrer" class="social-link text-(--primary) text-[5vw] font-light leading-none uppercase tracking-tighter hover:font-extrabold transition-all duration-300">
+                        Instagram
+                    </a>
+                )}
+                {t.pages.contact.socials?.behance && (
+                    <a href={t.pages.contact.socials.behance} target="_blank" rel="noopener noreferrer" class="social-link text-(--primary) text-[5vw] font-light leading-none uppercase tracking-tighter hover:font-extrabold transition-all duration-300">
+                        Behance
+                    </a>
+                )}
+                {t.pages.contact.socials?.linkedin && (
+                    <a href={t.pages.contact.socials.linkedin} target="_blank" rel="noopener noreferrer" class="social-link text-(--primary) text-[5vw] font-light leading-none uppercase tracking-tighter hover:font-extrabold transition-all duration-300">
+                        LinkedIn
+                    </a>
+                )}
+            </div>
+        </div>
+    </div>
 </MainLayout>
+
+<script is:inline>
+    function initContactAnimation() {
+        const links = document.querySelectorAll('.contact-link, .social-link');
+        
+        const typeText = async (element) => {
+            const fullText = element.getAttribute('data-text') || element.textContent.trim();
+            element.textContent = '';
+            element.style.opacity = '1';
+            
+            for (let i = 0; i < fullText.length; i++) {
+                element.textContent += fullText.charAt(i);
+                await new Promise(r => setTimeout(r, 30));
+            }
+        };
+
+        const runSequence = async () => {
+            for (const link of links) {
+                if (link.classList.contains('contact-link')) {
+                    await typeText(link);
+                }
+            }
+        };
+
+        runSequence();
+    }
+
+    initContactAnimation();
+    document.addEventListener('astro:after-swap', initContactAnimation);
+</script>
+
+<style>
+    .animate-in {
+        animation: fadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
