@@ -16,15 +16,15 @@ const t = useTranslations(lang as any);
 <MainLayout title={t.pages.contact.title} lang={lang as string}>
     <div class="flex flex-col justify-end min-h-screen p-16 animate-in">
         <div class="spacer grow"></div>
-        
+
         <div class="contact-content">
             <h2 class="text-(--primary) text-[4vw] font-light uppercase tracking-tighter mb-4 opacity-70">
                 {t.pages.contact.title}
             </h2>
-            
-            <a 
-                href={`mailto:${t.pages.contact.email}`} 
-                class="contact-link text-(--primary) text-[8vw] font-bold leading-[0.8] uppercase block tracking-tighter hover:font-extrabold transition-all duration-300 break-words mb-12"
+
+            <a
+                href={`mailto:${t.pages.contact.email}`}
+                class="contact-link text-(--primary) text-[8vw] font-bold leading-[0.8] uppercase block tracking-tighter hover:font-extrabold transition-all duration-300 wrap-break-word mb-12"
                 data-text={t.pages.contact.email}
             >
                 {t.pages.contact.email}
@@ -54,12 +54,12 @@ const t = useTranslations(lang as any);
 <script is:inline>
     function initContactAnimation() {
         const links = document.querySelectorAll('.contact-link, .social-link');
-        
+
         const typeText = async (element) => {
             const fullText = element.getAttribute('data-text') || element.textContent.trim();
             element.textContent = '';
             element.style.opacity = '1';
-            
+
             for (let i = 0; i < fullText.length; i++) {
                 element.textContent += fullText.charAt(i);
                 await new Promise(r => setTimeout(r, 30));

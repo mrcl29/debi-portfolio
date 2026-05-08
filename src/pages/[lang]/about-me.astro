@@ -18,7 +18,7 @@ const t = useTranslations(lang as any);
         <h2 class="text-(--primary) text-[4vw] font-light uppercase tracking-tighter mb-12 opacity-70">
             {t.pages.aboutMe.title}
         </h2>
-        
+
         <div class="flex flex-col gap-8 mb-24 max-w-2xl">
             {t.pages.aboutMe.bio.map((paragraph) => (
                 <p class="text-(--primary) text-2xl md:text-3xl font-plain lowercase leading-tight opacity-90">
@@ -31,11 +31,11 @@ const t = useTranslations(lang as any);
             <h3 class="text-(--primary) text-[2vw] font-bold uppercase tracking-tighter mb-8 border-b border-(--primary)/20 pb-4">
                 Experience
             </h3>
-            
+
             <div class="flex flex-col gap-12">
                 {t.pages.aboutMe.experience?.map((item) => (
                     <div class="experience-item flex flex-col md:flex-row gap-4 md:gap-16">
-                        <span class="text-(--primary) text-xl font-ink opacity-60 min-w-[120px]">
+                        <span class="text-(--primary) text-xl font-ink opacity-60 min-w-30">
                             {item.year}
                         </span>
                         <div class="flex flex-col gap-2">
