@@ -79,7 +79,7 @@ export const ui: Record<keyof typeof languages, langDict> = {
                     { id: 'branding', title: "BRANDING", component: Branding },
                     { id: 'events', title: "EVENTS", component: Branding  },
                     { id: 'editorial', title: "EDITORIAL", component: Branding  },
-                    { id: 'art-direction', title: "ART DIRECTION", component: Branding  }
+                    { id: 'art-direction', title: "ART DIR.", component: Branding  }
                 ]
             },
             aboutMe: {
