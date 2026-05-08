@@ -9,18 +9,24 @@ interface Props {
 const { sections } = Astro.props as Props;
 ---
 
-<nav class="absolute top-0 left-0 h-full w-full z-40 p-15 flex flex-col justify-end bg-transparent pointer-events-none overflow-hidden animate-in">
-  <ul class="flex flex-col list-none m-0 p-0 pointer-events-auto">
+<nav class="section-nav-container relative z-40 p-16 flex flex-col min-h-screen bg-transparent animate-in">
+  <div class="spacer grow"></div>
+  <ul class="flex flex-col list-none m-0 p-0">
     {
       sections?.map((section) => {
         const SectionComponent = section.component;
         return (
-          <li class="section-item group" data-id={section.id}>
-            <span class="section-title text-(--primary) text-[7vw] md:text-[7vw] font-light leading-none uppercase block tracking-tighter hover:font-extrabold transition-all duration-300 cursor-pointer">
-              {section.title}
-            </span>
+          <li class="section-item group opacity-0" data-id={section.id}>
+            <button 
+              class="section-title w-full text-left text-(--primary) text-[7vw] md:text-[7vw] font-light leading-[0.8] uppercase block tracking-tighter hover:font-extrabold transition-all duration-300 cursor-pointer appearance-none bg-transparent border-none p-0 h-[7vw] md:h-[7vw]"
+              data-text={section.title}
+            >
+              {/* Text injected via JS */}
+            </button>
             <div class="section-content max-h-0 opacity-0 overflow-hidden transition-all duration-500 ease-in-out">
-              {SectionComponent && <SectionComponent />}
+              <div class="py-8">
+                {SectionComponent && <SectionComponent />}
+              </div>
             </div>
           </li>
         )
@@ -29,82 +35,99 @@ const { sections } = Astro.props as Props;
   </ul>
 </nav>
 
-<script define:vars={{ sections }}>
+<script is:inline>
   function initSections() {
+    const nav = document.querySelector('.section-nav-container');
+    const spacer = nav?.querySelector('.spacer');
     const items = document.querySelectorAll('.section-item');
+
+    if (!nav || !spacer || items.length === 0) return;
+
+    function fixSpacer() {
+      spacer.style.flexBasis = 'auto';
+      spacer.style.flexGrow = '1';
+
+      const openStates = Array.from(items).map(item => {
+        const content = item.querySelector('.section-content');
+        const isOpen = !content.classList.contains('max-h-0');
+        return { content, isOpen, maxHeight: content.style.maxHeight };
+      });
+
+      openStates.forEach(state => {
+        if (state.isOpen) {
+          state.content.classList.add('max-h-0');
+          state.content.style.maxHeight = '0px';
+        }
+      });
+
+      const height = spacer.offsetHeight;
+
+      openStates.forEach(state => {
+        if (state.isOpen) {
+          state.content.classList.remove('max-h-0');
+          state.content.style.maxHeight = state.maxHeight;
+        }
+      });
+
+      spacer.style.flexGrow = '0';
+      spacer.style.flexBasis = `${height}px`;
+    }
+
+    // --- Typewriter Logic ---
+    const typeTitle = async (titleElement) => {
+      const fullText = titleElement.getAttribute('data-text');
+      titleElement.textContent = '';
+      for (let i = 0; i < fullText.length; i++) {
+        titleElement.textContent += fullText.charAt(i);
+        await new Promise(r => setTimeout(r, 40));
+      }
+    };
+
+    const runTypewriterSequence = async () => {
+      for (const item of items) {
+        item.classList.remove('opacity-0');
+        const titleElement = item.querySelector('.section-title');
+        await typeTitle(titleElement);
+        await new Promise(r => setTimeout(r, 80));
+      }
+    };
+
+    fixSpacer();
+    runTypewriterSequence();
+
+    window.removeEventListener('resize', fixSpacer);
+    window.addEventListener('resize', fixSpacer);
 
     items.forEach(item => {
       const title = item.querySelector('.section-title');
       const content = item.querySelector('.section-content');
 
-      const toggle = (force) => {
-        const isOpen = force !== undefined ? force : content.classList.contains('max-h-0');
+      title?.addEventListener('click', () => {
+        const isOpen = !content.classList.contains('max-h-0');
 
-        if (isOpen) {
-          // Close other sections first
-          items.forEach(otherItem => {
-            if (otherItem !== item) {
-              const otherTitle = otherItem.querySelector('.section-title');
-              const otherContent = otherItem.querySelector('.section-content');
-              otherContent.classList.add('max-h-0', 'opacity-0');
-              otherContent.classList.remove('max-h-[500px]', 'opacity-100', 'mt-4');
-              otherTitle?.classList.remove('font-extrabold');
-            }
-          });
+        items.forEach(otherItem => {
+          if (otherItem !== item) {
+            const otherTitle = otherItem.querySelector('.section-title');
+            const otherContent = otherItem.querySelector('.section-content');
+            otherContent.classList.add('max-h-0', 'opacity-0');
+            otherContent.style.maxHeight = '0px';
+            otherTitle?.classList.remove('font-extrabold');
+          }
+        });
 
+        if (!isOpen) {
           content.classList.remove('max-h-0', 'opacity-0');
-          content.classList.add('max-h-[500px]', 'opacity-100', 'mt-4');
+          content.style.maxHeight = content.scrollHeight + 'px';
           title?.classList.add('font-extrabold');
         } else {
           content.classList.add('max-h-0', 'opacity-0');
-          content.classList.remove('max-h-[500px]', 'opacity-100', 'mt-4');
+          content.style.maxHeight = '0px';
           title?.classList.remove('font-extrabold');
         }
-      };
-
-      title?.addEventListener('click', () => toggle());
-
-      // Store toggle function on the element for scroll access
-      (item)._toggleSection = toggle;
       });
-
-      // Scroll logic: detect when specific content areas are reached
-      const main = document.querySelector('main');
-      if (main) {
-      const observerOptions = {
-        root: main,
-        // Trigger when the section occupies a good chunk of the center/top
-        rootMargin: '-10% 0px -70% 0px',
-        threshold: 0
-      };
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          const id = entry.target.id;
-          const item = document.querySelector(`.section-item[data-id="${id}"]`);
-
-          if (entry.isIntersecting) {
-            if (item && item._toggleSection) {
-              item._toggleSection(true);
-            }
-          } else {
-            // Only close if it's the one currently open (to avoid redundant calls)
-            if (item && item._toggleSection && item.querySelector('.section-title').classList.contains('font-extrabold')) {
-              item._toggleSection(false);
-            }
-          }
-        });
-      }, observerOptions);
-
-      // Observe elements in the main content that have matching IDs
-      sections.forEach(section => {
-        const target = document.getElementById(section.id);
-        if (target) observer.observe(target);
-      });
-    }
+    });
   }
 
-  // Init on load and after swaps
   initSections();
   document.addEventListener('astro:after-swap', initSections);
 </script>

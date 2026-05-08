@@ -6,10 +6,10 @@ const t = useTranslations(lang);
 
 // Mapeo de las claves del menú a las rutas de archivo reales
 const routes: Record<keyof typeof t.nav, string> = {
-  projects: `/${lang}/Projects`,
-  aboutMe: `/${lang}/AboutMe`,
-  contact: `/${lang}/Contact`,
-  inspo: `/${lang}/Inspo`,
+  projects: `/${lang}/projects`,
+  aboutMe: `/${lang}/about-me`,
+  contact: `/${lang}/contact`,
+  inspo: `/${lang}/inspo`,
 };
 
 const { pathname } = Astro.url;
@@ -32,7 +32,7 @@ const navEntries = Object.entries(t.nav);
           <li>
             <a
               href={href}
-              class={`text-(--primary) text-[7vw] md:text-[7vw] no-underline transition-all hover:font-extrabold uppercase block tracking-tighter leading-none ${isActive ? 'font-extrabold' : 'font-light'}`}
+              class={`text-(--primary) text-[7vw] md:text-[7vw] leading-none no-underline transition-all hover:font-extrabold uppercase block tracking-tighter ${isActive ? 'font-extrabold' : 'font-light'}`}
             >
               {label}
             </a>
