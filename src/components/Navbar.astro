@@ -20,7 +20,7 @@ const navEntries = Object.entries(t.nav);
 ---
 
 <nav class="fixed top-0 left-0 h-screen w-full md:w-1/2 z-50 p-16 flex flex-col justify-end bg-transparent pointer-events-none overflow-hidden">
-  <ul class="flex flex-col list-none m-0 p-0 pointer-events-auto gap-8">
+  <ul class="flex flex-col list-none m-0 p-0 pointer-events-auto">
     {
       navEntries.map(([key, label]) => {
         const routeKey = key as keyof typeof t.nav;
@@ -32,7 +32,7 @@ const navEntries = Object.entries(t.nav);
           <li>
             <a
               href={href}
-              class={`text-(--primary) text-[7vw] md:text-[7vw] leading-[0.8] no-underline transition-all duration-100 hover:font-extrabold uppercase block tracking-tighter ${isActive ? 'font-extrabold' : 'font-light'}`}
+              class={`text-(--primary) text-[7vw] md:text-[7vw] no-underline transition-all hover:font-extrabold uppercase block tracking-tighter leading-none ${isActive ? 'font-extrabold' : 'font-light'}`}
             >
               {label}
             </a>
