@@ -105,6 +105,7 @@ const { sections } = Astro.props as Props;
       title?.addEventListener('click', () => {
         const isOpen = !content.classList.contains('max-h-0');
 
+        // Cerrar otros
         items.forEach(otherItem => {
           if (otherItem !== item) {
             const otherTitle = otherItem.querySelector('.section-title');
@@ -116,22 +117,12 @@ const { sections } = Astro.props as Props;
         });
 
         if (!isOpen) {
+          // Abrir actual
           content.classList.remove('max-h-0', 'opacity-0');
           content.style.maxHeight = content.scrollHeight + 'px';
           title?.classList.add('font-extrabold');
-
-          // Scroll al tope del item pulsado
-          const main = document.querySelector('main');
-          if (main) {
-            // Un pequeño retraso para asegurar que el DOM se ha actualizado
-            setTimeout(() => {
-              main.scrollTo({
-                top: item.offsetTop,
-                behavior: 'smooth'
-              });
-            }, 50);
-          }
         } else {
+          // Cerrar actual
           content.classList.add('max-h-0', 'opacity-0');
           content.style.maxHeight = '0px';
           title?.classList.remove('font-extrabold');

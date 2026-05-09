@@ -8,13 +8,14 @@ import '@/styles/global.css';
 interface Props {
 	title: string;
 	lang: string;
+	isIndex?: boolean;
 }
 
-const { title, lang } = Astro.props;
+const { title, lang, isIndex = false } = Astro.props;
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} data-page={isIndex ? 'index' : 'other'}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />

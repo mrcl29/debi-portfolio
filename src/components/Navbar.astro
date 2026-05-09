@@ -10,27 +10,41 @@ const routes: Record<keyof typeof t.nav, string> = {
   aboutMe: `/${lang}/about-me`,
   contact: `/${lang}/contact`,
   inspo: `/${lang}/inspo`,
+  lastProject: `/${lang}#last-project`,
 };
 
 const { pathname } = Astro.url;
+// Mejoramos la detección de index
+const isIndex = pathname.replace(/\/$/, '') === `/${lang}` || pathname === '/';
+
 // Normalizamos la URL actual (quitando slash final) para comparar correctamente
 const currentPath = pathname.replace(/\/$/, '') || `/${lang}`;
 
-const navEntries = Object.entries(t.nav);
+// Filtramos las entradas para que el último proyecto solo aparezca en el index
+const navEntries = Object.entries(t.nav).filter(([key]) => isIndex || key !== 'lastProject');
 ---
 
-<nav class="fixed top-0 left-0 h-screen w-full md:w-1/2 z-50 p-16 flex flex-col justify-end bg-transparent pointer-events-none overflow-hidden">
-  <ul class="flex flex-col list-none m-0 p-0 pointer-events-auto">
+<nav class="fixed inset-y-0 left-0 w-full md:w-1/2 z-50 p-16 flex flex-col justify-end bg-transparent pointer-events-none overflow-hidden">
+  <ul
+    id="nav-list"
+    class={`flex flex-col list-none m-0 p-0 pointer-events-auto transition-transform duration-500 ${isIndex ? 'translate-y-[14vw]' : ''}`}
+  >
     {
       navEntries.map(([key, label]) => {
         const routeKey = key as keyof typeof t.nav;
         const href = routes[routeKey];
-        const normalizedHref = href.replace(/\/$/, '');
-        const isActive = normalizedHref === currentPath;
+        const normalizedHref = href.split('#')[0].replace(/\/$/, '');
+        const isActive = normalizedHref === currentPath && key !== 'lastProject';
+
+        const isLastProject = key === 'lastProject';
 
         return (
-          <li>
+          <li
+            id={isLastProject ? "nav-last-project" : undefined}
+            class={isLastProject ? "opacity-0 pointer-events-none transition-opacity duration-500" : ""}
+          >
             <a
+              id={isLastProject ? "nav-last-project-link" : undefined}
               href={href}
               class={`text-(--primary) text-[7vw] md:text-[7vw] leading-none no-underline transition-all hover:font-extrabold uppercase block tracking-tighter ${isActive ? 'font-extrabold' : 'font-light'}`}
             >
@@ -42,3 +56,47 @@ const navEntries = Object.entries(t.nav);
     }
   </ul>
 </nav>
+
+<script>
+  const setupNav = () => {
+    const navList = document.getElementById('nav-list');
+    const lastProjectNav = document.getElementById('nav-last-project');
+    const lastProjectLink = document.getElementById('nav-last-project-link');
+    const isIndex = document.documentElement.dataset.page === 'index';
+
+    if (!lastProjectNav || !navList) return;
+
+    if (isIndex) {
+      // Intersection Observer para detectar cuando la sección del último proyecto es visible
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            lastProjectNav.classList.remove('opacity-0', 'pointer-events-none');
+            lastProjectNav.classList.add('opacity-100', 'pointer-events-auto');
+            navList.classList.remove('translate-y-[14vw]');
+            lastProjectLink?.classList.add('font-extrabold');
+            lastProjectLink?.classList.remove('font-light');
+          } else {
+            // Si el scroll está por encima de la sección, lo ocultamos y bajamos la lista
+            if (entry.boundingClientRect.top > 0) {
+              lastProjectNav.classList.add('opacity-0', 'pointer-events-none');
+              lastProjectNav.classList.remove('opacity-100', 'pointer-events-auto');
+              navList.classList.add('translate-y-[14vw]');
+            }
+            lastProjectLink?.classList.remove('font-extrabold');
+            lastProjectLink?.classList.add('font-light');
+          }
+        });
+      }, {
+        threshold: 0.2
+      });
+
+      const section = document.getElementById('last-project');
+      if (section) observer.observe(section);
+    }
+  };
+
+  // Ejecutar al cargar y tras transiciones de Astro si se usan
+  setupNav();
+  document.addEventListener('astro:after-swap', setupNav);
+</script>

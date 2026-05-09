@@ -63,6 +63,7 @@ export const ui: Record<keyof typeof languages, langDict> = {
             aboutMe: 'SOBRE MÍ',
             contact: 'CONTACTO',
             inspo: 'INSPO',
+            lastProject: 'ÚLTIMO PROYECTO',
         },
     },
     en: {
@@ -116,6 +117,7 @@ export const ui: Record<keyof typeof languages, langDict> = {
             aboutMe: 'ABOUT ME',
             contact: 'CONTACT',
             inspo: 'INSPO',
+            lastProject: 'LAST PROJECT',
         },
     },
     cat: {
@@ -169,6 +171,7 @@ export const ui: Record<keyof typeof languages, langDict> = {
             aboutMe: 'SOBRE MI',
             contact: 'CONTACTE',
             inspo: 'INSPO',
+            lastProject: 'ÚLTIM PROJECTE',
         },
     },
 };

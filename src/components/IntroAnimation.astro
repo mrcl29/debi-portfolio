@@ -7,7 +7,7 @@ const t = useTranslations(lang as any);
 
 <div
     id="intro-overlay"
-    class="fixed inset-0 z-100 bg-(--background) flex items-center justify-center hidden pointer-events-none"
+    class="fixed inset-0 z-[100] bg-(--background) flex items-center justify-center hidden pointer-events-none"
 >
     <div class="w-250">
         <h1
@@ -32,6 +32,7 @@ const t = useTranslations(lang as any);
         // Activamos el overlay y bloqueamos interacciones
         overlay.classList.remove("hidden");
         overlay.style.pointerEvents = "auto";
+        overlay.style.display = "flex";
 
         const typeText = async (text) => {
             textElement.textContent = "";
@@ -74,9 +75,13 @@ const t = useTranslations(lang as any);
             setTimeout(() => {
                 overlay.style.display = "none";
                 overlay.style.pointerEvents = "none";
+                overlay.classList.add("hidden");
             }, 1000);
         };
 
         runAnimation();
+    } else if (overlay) {
+        overlay.style.display = "none";
+        overlay.classList.add("hidden");
     }
 </script>
