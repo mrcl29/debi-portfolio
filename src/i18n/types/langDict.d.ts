@@ -22,6 +22,13 @@ export interface ContactContent extends PageContent {
     linkedin?: string;
     behance?: string;
   };
+  form: {
+    name: string;
+    email: string;
+    message: string;
+    submit: string;
+    success: string;
+  };
 }
 
 export interface AboutMeContent extends PageContent {

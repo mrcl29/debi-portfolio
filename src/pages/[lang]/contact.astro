@@ -11,83 +11,144 @@ export function getStaticPaths() {
 
 const { lang } = Astro.params;
 const t = useTranslations(lang as any);
+const socials = t.pages.contact.socials || {};
 ---
 
 <MainLayout title={t.pages.contact.title} lang={lang as string}>
-    <div class="flex flex-col justify-end min-h-screen p-16 animate-in">
-        <div class="spacer grow"></div>
+    <div class="contact-wrapper h-full flex items-center justify-center p-8 md:p-16 animate-in overflow-hidden">
 
-        <div class="contact-content">
-            <h2 class="text-(--primary) text-[4vw] font-light uppercase tracking-tighter mb-4 opacity-70">
-                {t.pages.contact.title}
-            </h2>
+        <div class="contact-content w-full max-w-4xl flex flex-col gap-12 md:gap-16">
 
-            <a
-                href={`mailto:${t.pages.contact.email}`}
-                class="contact-link text-(--primary) text-[8vw] font-bold leading-[0.8] uppercase block tracking-tighter hover:font-extrabold transition-all duration-300 wrap-break-word mb-12"
-                data-text={t.pages.contact.email}
-            >
-                {t.pages.contact.email}
-            </a>
+            <!-- Contact Header: Email + Socials -->
+            <div class="contact-links-section flex flex-col gap-6">
 
-            <div class="flex flex-col gap-4">
-                {t.pages.contact.socials?.instagram && (
-                    <a href={t.pages.contact.socials.instagram} target="_blank" rel="noopener noreferrer" class="social-link text-(--primary) text-[5vw] font-light leading-none uppercase tracking-tighter hover:font-extrabold transition-all duration-300">
-                        Instagram
+                <div class="links-group flex flex-wrap gap-x-10 gap-y-4 justify-center md:justify-start items-baseline">
+                    <!-- Email as a primary social-style link -->
+                    <a
+                        href={`mailto:${t.pages.contact.email}`}
+                        class="contact-link text-(--primary) text-2xl md:text-4xl font-light uppercase tracking-tighter hover:font-extrabold transition-all border-b-2 border-(--primary)/10 pb-1"
+                        data-text={t.pages.contact.email}
+                    >
+                        Email
                     </a>
-                )}
-                {t.pages.contact.socials?.behance && (
-                    <a href={t.pages.contact.socials.behance} target="_blank" rel="noopener noreferrer" class="social-link text-(--primary) text-[5vw] font-light leading-none uppercase tracking-tighter hover:font-extrabold transition-all duration-300">
-                        Behance
-                    </a>
-                )}
-                {t.pages.contact.socials?.linkedin && (
-                    <a href={t.pages.contact.socials.linkedin} target="_blank" rel="noopener noreferrer" class="social-link text-(--primary) text-[5vw] font-light leading-none uppercase tracking-tighter hover:font-extrabold transition-all duration-300">
-                        LinkedIn
-                    </a>
-                )}
+
+                    {Object.entries(socials).map(([key, url]) => (
+                        <a
+                            href={url.startsWith('http') ? url : `https://${url}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="social-link text-(--primary) text-2xl md:text-4xl font-light uppercase tracking-tighter hover:font-extrabold transition-all border-b-2 border-(--primary)/10 pb-1"
+                        >
+                            {key}
+                        </a>
+                    ))}
+                </div>
             </div>
+
+            <!-- Form Section -->
+            <form action="https://api.web3forms.com/submit" method="POST" class="flex flex-col gap-8 md:gap-12 w-full">
+                <input type="hidden" name="access_key" value="b16635c9-71a4-4984-8791-f24b56668ab0">
+                <input type="hidden" name="from_name" value="Debi Portfolio Contact">
+                <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                    <div class="flex flex-col gap-3">
+                        <label for="name" class="text-[10px] md:text-xs uppercase font-plain tracking-widest opacity-60">
+                            {t.pages.contact.form.name}
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            required
+                            class="bg-transparent border-b-2 border-(--primary)/20 pb-4 focus:border-(--primary) outline-none transition-colors font-plain text-xl md:text-3xl"
+                        >
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <label for="email" class="text-[10px] md:text-xs uppercase font-plain tracking-widest opacity-60">
+                            {t.pages.contact.form.email}
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            required
+                            class="bg-transparent border-b-2 border-(--primary)/20 pb-4 focus:border-(--primary) outline-none transition-colors font-plain text-xl md:text-3xl"
+                        >
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <label for="message" class="text-[10px] md:text-xs uppercase font-plain tracking-widest opacity-60">
+                        {t.pages.contact.form.message}
+                    </label>
+                    <textarea
+                        id="message"
+                        name="message"
+                        rows="2"
+                        required
+                        class="bg-transparent border-b-2 border-(--primary)/20 pb-4 focus:border-(--primary) outline-none transition-colors font-plain text-xl md:text-3xl resize-none"
+                    ></textarea>
+                </div>
+
+                <button
+                    type="submit"
+                    class="self-center md:self-start text-(--primary) text-4xl md:text-6xl uppercase tracking-tighter hover:font-extrabold  transition-all cursor-pointer border-none bg-transparent p-0 mt-4"
+                >
+                    {t.pages.contact.form.submit}
+                </button>
+            </form>
         </div>
     </div>
 </MainLayout>
 
 <script is:inline>
+    // Animation script kept for consistency if needed, but simplified
     function initContactAnimation() {
-        const links = document.querySelectorAll('.contact-link, .social-link');
-
+        const links = document.querySelectorAll('.contact-link');
         const typeText = async (element) => {
-            const fullText = element.getAttribute('data-text') || element.textContent.trim();
+            const fullText = element.getAttribute('data-text');
+            if (!fullText) return;
             element.textContent = '';
-            element.style.opacity = '1';
-
             for (let i = 0; i < fullText.length; i++) {
                 element.textContent += fullText.charAt(i);
-                await new Promise(r => setTimeout(r, 30));
+                await new Promise(r => setTimeout(r, 20));
             }
         };
-
-        const runSequence = async () => {
-            for (const link of links) {
-                if (link.classList.contains('contact-link')) {
-                    await typeText(link);
-                }
-            }
-        };
-
-        runSequence();
+        // Removed auto-typing for "Email" text to maintain visual consistency with other links
     }
-
-    initContactAnimation();
     document.addEventListener('astro:after-swap', initContactAnimation);
 </script>
 
 <style>
+    .contact-wrapper {
+        height: 100vh;
+        overflow: hidden;
+    }
+
     .animate-in {
         animation: fadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
+        from { opacity: 0; transform: translateY(30px); }
         to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Input focus and autofill refinements */
+    input:-webkit-autofill {
+        -webkit-text-fill-color: var(--primary);
+        -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    @media (max-width: 1024px) {
+        .contact-wrapper {
+            overflow-y: auto;
+            height: auto;
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            align-items: flex-start;
+        }
     }
 </style>

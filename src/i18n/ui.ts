@@ -42,19 +42,38 @@ export const ui: Record<keyof typeof languages, langDict> = {
             },
             contact: {
                 title: 'Contacto',
-                email: 'hola@debi.design',
+                email: 'debi.milenova@gmail.com',
                 socials: {
-                    instagram: 'https://instagram.com/debi.design',
-                    linkedin: 'https://linkedin.com/in/deboraportfolio',
-                    behance: 'https://behance.net/debi-art'
+                    instagram: 'https://www.instagram.com/dm.dsign/',
+                    linkedin: 'www.linkedin.com/in/deboramilenova',
+                    behance: 'https://www.behance.net/deboramilenova'
+                },
+                form: {
+                    name: 'Nombre',
+                    email: 'Email',
+                    message: 'Mensaje',
+                    submit: 'Enviar',
+                    success: '¡Mensaje enviado con éxito!'
                 }
             },
             inspo: {
                 title: 'Inspo',
                 images: [
-                    { url: 'https://picsum.photos/800/1200?random=1', caption: 'Atmosphere 01' },
-                    { url: 'https://picsum.photos/800/1200?random=2', caption: 'Texture Study' },
-                    { url: 'https://picsum.photos/800/1200?random=3', caption: 'Color Palette' }
+                    { url: 'https://picsum.photos/id/10/800/1200', caption: 'Atmosphere 01' },
+                    { url: 'https://picsum.photos/id/20/1200/800', caption: 'Texture Study' },
+                    { url: 'https://picsum.photos/id/30/800/800', caption: 'Color Palette' },
+                    { url: 'https://picsum.photos/id/40/800/1000', caption: 'Composition' },
+                    { url: 'https://picsum.photos/id/50/1000/800', caption: 'Light & Shadow' },
+                    { url: 'https://picsum.photos/id/60/800/1200', caption: 'Typography' },
+                    { url: 'https://picsum.photos/id/70/1200/1200', caption: 'Grid Systems' },
+                    { url: 'https://picsum.photos/id/11/800/600', caption: 'Organic Forms' },
+                    { url: 'https://picsum.photos/id/12/600/800', caption: 'Minimalism' },
+                    { url: 'https://picsum.photos/id/13/1000/1000', caption: 'Abstract' },
+                    { url: 'https://picsum.photos/id/14/800/1200', caption: 'Photography' },
+                    { url: 'https://picsum.photos/id/15/1200/800', caption: 'UI Design' },
+                    { url: 'https://picsum.photos/id/16/800/800', caption: 'Branding' },
+                    { url: 'https://picsum.photos/id/17/800/1000', caption: 'Illustration' },
+                    { url: 'https://picsum.photos/id/18/1000/800', caption: 'Editorial' }
                 ]
             },
         },
@@ -96,19 +115,38 @@ export const ui: Record<keyof typeof languages, langDict> = {
             },
             contact: {
                 title: 'Contact',
-                email: 'hello@debi.design',
+                email: 'debi.milenova@gmail.com',
                 socials: {
-                    instagram: 'https://instagram.com/debi.design',
-                    linkedin: 'https://linkedin.com/in/deboraportfolio',
-                    behance: 'https://behance.net/debi-art'
+                    instagram: 'https://www.instagram.com/dm.dsign/',
+                    linkedin: 'www.linkedin.com/in/deboramilenova',
+                    behance: 'https://www.behance.net/deboramilenova'
+                },
+                form: {
+                    name: 'Name',
+                    email: 'Email',
+                    message: 'Message',
+                    submit: 'Send',
+                    success: 'Message sent successfully!'
                 }
             },
             inspo: {
                 title: 'Inspo',
                 images: [
-                    { url: 'https://picsum.photos/800/1200?random=1', caption: 'Atmosphere 01' },
-                    { url: 'https://picsum.photos/800/1200?random=2', caption: 'Texture Study' },
-                    { url: 'https://picsum.photos/800/1200?random=3', caption: 'Color Palette' }
+                    { url: 'https://picsum.photos/id/10/800/1200', caption: 'Atmosphere 01' },
+                    { url: 'https://picsum.photos/id/20/1200/800', caption: 'Texture Study' },
+                    { url: 'https://picsum.photos/id/30/800/800', caption: 'Color Palette' },
+                    { url: 'https://picsum.photos/id/40/800/1000', caption: 'Composition' },
+                    { url: 'https://picsum.photos/id/50/1000/800', caption: 'Light & Shadow' },
+                    { url: 'https://picsum.photos/id/60/800/1200', caption: 'Typography' },
+                    { url: 'https://picsum.photos/id/70/1200/1200', caption: 'Grid Systems' },
+                    { url: 'https://picsum.photos/id/11/800/600', caption: 'Organic Forms' },
+                    { url: 'https://picsum.photos/id/12/600/800', caption: 'Minimalism' },
+                    { url: 'https://picsum.photos/id/13/1000/1000', caption: 'Abstract' },
+                    { url: 'https://picsum.photos/id/14/800/1200', caption: 'Photography' },
+                    { url: 'https://picsum.photos/id/15/1200/800', caption: 'UI Design' },
+                    { url: 'https://picsum.photos/id/16/800/800', caption: 'Branding' },
+                    { url: 'https://picsum.photos/id/17/800/1000', caption: 'Illustration' },
+                    { url: 'https://picsum.photos/id/18/1000/800', caption: 'Editorial' }
                 ]
             },
         },
@@ -150,19 +188,38 @@ export const ui: Record<keyof typeof languages, langDict> = {
             },
             contact: {
                 title: 'Contacte',
-                email: 'hola@debi.design',
+                email: 'debi.milenova@gmail.com',
                 socials: {
-                    instagram: 'https://instagram.com/debi.design',
-                    linkedin: 'https://linkedin.com/in/deboraportfolio',
-                    behance: 'https://behance.net/debi-art'
+                    instagram: 'https://www.instagram.com/dm.dsign/',
+                    linkedin: 'www.linkedin.com/in/deboramilenova',
+                    behance: 'https://www.behance.net/deboramilenova'
+                },
+                form: {
+                    name: 'Nom',
+                    email: 'Email',
+                    message: 'Missatge',
+                    submit: 'Enviar',
+                    success: '¡Missatge enviat amb èxit!'
                 }
             },
             inspo: {
                 title: 'Inspo',
                 images: [
-                    { url: 'https://picsum.photos/800/1200?random=1', caption: 'Atmosphere 01' },
-                    { url: 'https://picsum.photos/800/1200?random=2', caption: 'Texture Study' },
-                    { url: 'https://picsum.photos/800/1200?random=3', caption: 'Color Palette' }
+                    { url: 'https://picsum.photos/id/10/800/1200', caption: 'Atmosphere 01' },
+                    { url: 'https://picsum.photos/id/20/1200/800', caption: 'Texture Study' },
+                    { url: 'https://picsum.photos/id/30/800/800', caption: 'Color Palette' },
+                    { url: 'https://picsum.photos/id/40/800/1000', caption: 'Composition' },
+                    { url: 'https://picsum.photos/id/50/1000/800', caption: 'Light & Shadow' },
+                    { url: 'https://picsum.photos/id/60/800/1200', caption: 'Typography' },
+                    { url: 'https://picsum.photos/id/70/1200/1200', caption: 'Grid Systems' },
+                    { url: 'https://picsum.photos/id/11/800/600', caption: 'Organic Forms' },
+                    { url: 'https://picsum.photos/id/12/600/800', caption: 'Minimalism' },
+                    { url: 'https://picsum.photos/id/13/1000/1000', caption: 'Abstract' },
+                    { url: 'https://picsum.photos/id/14/800/1200', caption: 'Photography' },
+                    { url: 'https://picsum.photos/id/15/1200/800', caption: 'UI Design' },
+                    { url: 'https://picsum.photos/id/16/800/800', caption: 'Branding' },
+                    { url: 'https://picsum.photos/id/17/800/1000', caption: 'Illustration' },
+                    { url: 'https://picsum.photos/id/18/1000/800', caption: 'Editorial' }
                 ]
             },
         },

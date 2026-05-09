@@ -3,6 +3,7 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import { languages } from '@/i18n/ui';
 import { useTranslations } from '@/i18n/utils';
+import { Image } from 'astro:assets';
 
 export function getStaticPaths() {
   return Object.keys(languages).map((lang) => {
@@ -34,9 +35,12 @@ const lastProjectImages = [
         {
           lastProjectImages.map((src, index) => (
             <div class={`overflow-hidden ${index % 2 === 0 ? 'mt-0' : 'md:mt-32'}`}>
-              <img
+              <Image
                 src={src}
                 alt={`Project image ${index + 1}`}
+                width={800}
+                height={1200}
+                loading={index < 2 ? "eager" : "lazy"}
                 class="w-full h-auto grayscale hover:grayscale-0 transition-all duration-700"
               />
             </div>
