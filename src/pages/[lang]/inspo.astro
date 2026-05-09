@@ -12,7 +12,7 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-const t = useTranslations(lang as any);
+const t = useTranslations(lang);
 const images = t.pages.inspo.images || [];
 
 // Shuffling on the server for initial static render
@@ -52,22 +52,21 @@ const shuffledImages = [...images].sort(() => Math.random() - 0.5);
     </div>
 </MainLayout>
 
-<script is:inline>
-    let animationId;
+<script>
+    let animationId: number;
     let scrollPos = 0;
     let targetScrollPos = 0;
     const autoSpeed = 0.5;
     let isDragging = false;
-    let startY = 0;
     let lastY = 0;
     let velocity = 0;
 
     function initInspoMarquee() {
         if (animationId) cancelAnimationFrame(animationId);
         
-        const container = document.getElementById('inspo-container');
-        const track = document.getElementById('inspo-track');
-        const grid1 = document.getElementById('inspo-grid-1');
+        const container = document.getElementById('inspo-container') as HTMLElement | null;
+        const track = document.getElementById('inspo-track') as HTMLElement | null;
+        const grid1 = document.getElementById('inspo-grid-1') as HTMLElement | null;
         if (!track || !grid1 || !container) return;
 
         // Shuffle
@@ -80,15 +79,14 @@ const shuffledImages = [...images].sort(() => Math.random() - 0.5);
         const oldGrid2 = document.getElementById('inspo-grid-2');
         if (oldGrid2) oldGrid2.remove();
 
-        const grid2 = grid1.cloneNode(true);
+        const grid2 = grid1.cloneNode(true) as HTMLElement;
         grid2.id = 'inspo-grid-2';
         track.appendChild(grid2);
 
         // Manual Scroll / Drag Logic
         container.addEventListener('mousedown', (e) => {
             isDragging = true;
-            startY = e.pageY;
-            lastY = startY;
+            lastY = e.pageY;
             velocity = 0;
         });
 
@@ -107,8 +105,7 @@ const shuffledImages = [...images].sort(() => Math.random() - 0.5);
         // Touch support
         container.addEventListener('touchstart', (e) => {
             isDragging = true;
-            startY = e.touches[0].pageY;
-            lastY = startY;
+            lastY = e.touches[0].pageY;
             velocity = 0;
         }, { passive: true });
 
@@ -131,6 +128,7 @@ const shuffledImages = [...images].sort(() => Math.random() - 0.5);
         }, { passive: false });
 
         function animate() {
+            if (!track || !grid1) return;
             const gridHeight = grid1.offsetHeight;
 
             // Auto-advance target
@@ -139,8 +137,6 @@ const shuffledImages = [...images].sort(() => Math.random() - 0.5);
             }
 
             // Lerp scrollPos towards targetScrollPos for "butter" smoothness
-            // Lower values (e.g. 0.05) = smoother but more "laggy"
-            // Higher values (e.g. 0.15) = more responsive
             const lerpFactor = 0.08;
             scrollPos += (targetScrollPos - scrollPos) * lerpFactor;
 

@@ -35,20 +35,21 @@ const { sections } = Astro.props as Props;
   </ul>
 </nav>
 
-<script is:inline>
+<script>
   function initSections() {
-    const nav = document.querySelector('.section-nav-container');
-    const spacer = nav?.querySelector('.spacer');
-    const items = document.querySelectorAll('.section-item');
+    const nav = document.querySelector('.section-nav-container') as HTMLElement | null;
+    const spacer = nav?.querySelector('.spacer') as HTMLElement | null;
+    const items = document.querySelectorAll('.section-item') as NodeListOf<HTMLElement>;
 
     if (!nav || !spacer || items.length === 0) return;
 
     function fixSpacer() {
+      if (!spacer) return;
       spacer.style.flexBasis = 'auto';
       spacer.style.flexGrow = '1';
 
       const openStates = Array.from(items).map(item => {
-        const content = item.querySelector('.section-content');
+        const content = item.querySelector('.section-content') as HTMLElement;
         const isOpen = !content.classList.contains('max-h-0');
         return { content, isOpen, maxHeight: content.style.maxHeight };
       });
@@ -74,8 +75,9 @@ const { sections } = Astro.props as Props;
     }
 
     // --- Typewriter Logic ---
-    const typeTitle = async (titleElement) => {
+    const typeTitle = async (titleElement: HTMLElement) => {
       const fullText = titleElement.getAttribute('data-text');
+      if (!fullText) return;
       titleElement.textContent = '';
       for (let i = 0; i < fullText.length; i++) {
         titleElement.textContent += fullText.charAt(i);
@@ -86,9 +88,11 @@ const { sections } = Astro.props as Props;
     const runTypewriterSequence = async () => {
       for (const item of items) {
         item.classList.remove('opacity-0');
-        const titleElement = item.querySelector('.section-title');
-        await typeTitle(titleElement);
-        await new Promise(r => setTimeout(r, 80));
+        const titleElement = item.querySelector('.section-title') as HTMLElement;
+        if (titleElement) {
+          await typeTitle(titleElement);
+          await new Promise(r => setTimeout(r, 80));
+        }
       }
     };
 
@@ -99,8 +103,8 @@ const { sections } = Astro.props as Props;
     window.addEventListener('resize', fixSpacer);
 
     items.forEach(item => {
-      const title = item.querySelector('.section-title');
-      const content = item.querySelector('.section-content');
+      const title = item.querySelector('.section-title') as HTMLElement;
+      const content = item.querySelector('.section-content') as HTMLElement;
 
       title?.addEventListener('click', () => {
         const isOpen = !content.classList.contains('max-h-0');
@@ -108,8 +112,8 @@ const { sections } = Astro.props as Props;
         // Cerrar otros
         items.forEach(otherItem => {
           if (otherItem !== item) {
-            const otherTitle = otherItem.querySelector('.section-title');
-            const otherContent = otherItem.querySelector('.section-content');
+            const otherTitle = otherItem.querySelector('.section-title') as HTMLElement;
+            const otherContent = otherItem.querySelector('.section-content') as HTMLElement;
             otherContent.classList.add('max-h-0', 'opacity-0');
             otherContent.style.maxHeight = '0px';
             otherTitle?.classList.remove('font-extrabold');
@@ -131,6 +135,7 @@ const { sections } = Astro.props as Props;
     });
   }
 
+  // Inicialización segura con ClientRouter
   initSections();
   document.addEventListener('astro:after-swap', initSections);
 </script>

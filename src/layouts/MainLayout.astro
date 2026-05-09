@@ -3,6 +3,7 @@ import { ownerName } from '@/constants/constants';
 import Navbar from '@/components/Navbar.astro';
 import Header from '@/components/Header.astro';
 import IntroAnimation from '@/components/IntroAnimation.astro';
+import { ClientRouter } from 'astro:transitions';
 import '@/styles/global.css';
 
 interface Props {
@@ -23,6 +24,7 @@ const { title, lang, isIndex = false } = Astro.props;
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title} | {ownerName} Portfolio</title>
+		<ClientRouter />
 	</head>
 	<body>
 		<IntroAnimation />

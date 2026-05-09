@@ -6,36 +6,42 @@
   src: url('../assets/fonts/PPNeueMachina-InktrapLight.otf') format('opentype');
   font-weight: 300;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: 'PP Neue Machina Inktrap';
   src: url('../assets/fonts/PPNeueMachina-InktrapLightItalic.otf') format('opentype');
   font-weight: 300;
   font-style: italic;
+  font-display: swap;
 }
 @font-face {
   font-family: 'PP Neue Machina Inktrap';
   src: url('../assets/fonts/PPNeueMachina-InktrapRegular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: 'PP Neue Machina Inktrap';
   src: url('../assets/fonts/PPNeueMachina-InktrapRegularItalic.otf') format('opentype');
   font-weight: 400;
   font-style: italic;
+  font-display: swap;
 }
 @font-face {
   font-family: 'PP Neue Machina Inktrap';
   src: url('../assets/fonts/PPNeueMachina-InktrapUltrabold.otf') format('opentype');
   font-weight: 800;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: 'PP Neue Machina Inktrap';
   src: url('../assets/fonts/PPNeueMachina-InktrapUltraboldItalic.otf') format('opentype');
   font-weight: 800;
   font-style: italic;
+  font-display: swap;
 }
 
 /* PP Neue Machina PLAIN */
@@ -44,36 +50,42 @@
   src: url('../assets/fonts/PPNeueMachina-PlainLight.otf') format('opentype');
   font-weight: 300;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: 'PP Neue Machina Plain';
   src: url('../assets/fonts/PPNeueMachina-PlainLightItalic.otf') format('opentype');
   font-weight: 300;
   font-style: italic;
+  font-display: swap;
 }
 @font-face {
   font-family: 'PP Neue Machina Plain';
   src: url('../assets/fonts/PPNeueMachina-PlainRegular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: 'PP Neue Machina Plain';
   src: url('../assets/fonts/PPNeueMachina-PlainRegularItalic.otf') format('opentype');
   font-weight: 400;
   font-style: italic;
+  font-display: swap;
 }
 @font-face {
   font-family: 'PP Neue Machina Plain';
   src: url('../assets/fonts/PPNeueMachina-PlainUltrabold.otf') format('opentype');
   font-weight: 800;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: 'PP Neue Machina Plain';
   src: url('../assets/fonts/PPNeueMachina-PlainUltraboldItalic.otf') format('opentype');
   font-weight: 800;
   font-style: italic;
+  font-display: swap;
 }
 
  @theme {

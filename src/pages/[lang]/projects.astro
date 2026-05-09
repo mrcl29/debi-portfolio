@@ -11,7 +11,7 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-const t = useTranslations(lang as any);
+const t = useTranslations(lang);
 ---
 
 <MainLayout title={t.pages.projects.title} lang={lang as string}>

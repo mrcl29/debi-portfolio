@@ -10,9 +10,8 @@ export function getStaticPaths() {
       return { params: { lang } };
   });
 }
-
 const { lang } = Astro.params;
-const t = useTranslations(lang as any);
+const t = useTranslations(lang);
 
 // Imágenes para la sección de "Último Proyecto"
 const lastProjectImages = [
@@ -51,9 +50,9 @@ const lastProjectImages = [
   </div>
 </MainLayout>
 
-<script is:inline>
+<script>
   async function initIndexTypewriter() {
-    const typeTitle = async (element) => {
+    const typeTitle = async (element: HTMLElement) => {
       const fullText = element.getAttribute('data-text');
       if (!fullText) return;
       element.textContent = '';
@@ -65,7 +64,7 @@ const lastProjectImages = [
     };
 
     const title = document.getElementById('last-project-title');
-    // if (title) await typeTitle(title);
+    if (title) await typeTitle(title);
   }
 
   initIndexTypewriter();

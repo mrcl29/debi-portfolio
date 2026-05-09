@@ -2,12 +2,14 @@
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang as any);
+const t = useTranslations(lang);
 ---
 
 <div
     id="intro-overlay"
-    class="fixed inset-0 z-[100] bg-(--background) flex items-center justify-center hidden pointer-events-none"
+    transition:persist
+    class="fixed inset-0 z-[100] bg-(--background) flex items-center justify-center pointer-events-auto"
+    data-phrases={JSON.stringify(t.intro.phrases)}
 >
     <div class="w-250">
         <h1
@@ -19,69 +21,77 @@ const t = useTranslations(lang as any);
     </div>
 </div>
 
-<script is:inline define:vars={{ phrases: t.intro.phrases }}>
-    const overlay = document.getElementById("intro-overlay");
-    const textElement = document.getElementById("intro-text");
-
-    // Usamos sessionStorage para que la animación salga una vez por sesión.
-    // Esto permite que si el usuario cierra y vuelve a abrir el navegador, la vuelva a ver,
-    // pero no le moleste si solo recarga la página.
-    const hasSeenIntro = sessionStorage.getItem("hasSeenIntro");
-
-    if (!hasSeenIntro && overlay && textElement) {
-        // Activamos el overlay y bloqueamos interacciones
-        overlay.classList.remove("hidden");
-        overlay.style.pointerEvents = "auto";
-        overlay.style.display = "flex";
-
-        const typeText = async (text) => {
-            textElement.textContent = "";
-            textElement.style.opacity = "1";
-
-            // Efecto de escritura carácter a carácter
-            for (let i = 0; i < text.length; i++) {
-                textElement.textContent += text.charAt(i);
-                await new Promise((r) => setTimeout(r, 50)); // Velocidad de escritura (ms)
-            }
-        };
-
-        const fadeOutText = async () => {
-            textElement.style.opacity = "0";
-            await new Promise((r) => setTimeout(r, 500)); // Esperar a que termine la transición CSS
-        };
-
-        const runAnimation = async () => {
-            await new Promise((r) => setTimeout(r, 500)); // Pequeña pausa inicial
-
-            // --- Frase 1 ---
-            await typeText(phrases[0]);
-            await new Promise((r) => setTimeout(r, 600)); // Tiempo de lectura
-            await fadeOutText();
-
-            // --- Frase 2 ---
-            await typeText(phrases[1]);
-            await new Promise((r) => setTimeout(r, 600)); // Tiempo de lectura
-            await fadeOutText();
-
-            // --- Finalizar ---
-            // Desvanecer el overlay para revelar el contenido sutilmente
-            overlay.style.transition = "opacity 1s ease-out";
-            overlay.style.opacity = "0";
-
-            // Marcar como visto
-            sessionStorage.setItem("hasSeenIntro", "true");
-
-            // Eliminar del flujo visual tras la animación
-            setTimeout(() => {
-                overlay.style.display = "none";
-                overlay.style.pointerEvents = "none";
-                overlay.classList.add("hidden");
-            }, 1000);
-        };
-
-        runAnimation();
-    } else if (overlay) {
-        overlay.style.display = "none";
-        overlay.classList.add("hidden");
+<script is:inline>
+    // Bloqueo inmediato para evitar que se vea la web si la animación debe ejecutarse.
+    // Si ya se ha visto, ocultamos el overlay al instante.
+    if (sessionStorage.getItem("hasSeenIntro")) {
+        const overlay = document.getElementById("intro-overlay");
+        if (overlay) overlay.style.display = "none";
     }
+</script>
+
+<script>
+    const setupIntro = () => {
+        const overlay = document.getElementById("intro-overlay") as HTMLElement | null;
+        const textElement = document.getElementById("intro-text") as HTMLElement | null;
+        if (!overlay || !textElement) return;
+
+        // Si ya está oculto (por persistencia o script inline), no hacemos nada
+        if (overlay.style.display === "none") return;
+
+        const phrases = JSON.parse(overlay.dataset.phrases || "[]");
+        const hasSeenIntro = sessionStorage.getItem("hasSeenIntro");
+
+        if (!hasSeenIntro) {
+            // La animación se ejecuta porque overlay es visible por defecto (sin la clase 'hidden')
+            const typeText = async (text: string) => {
+                textElement.textContent = "";
+                textElement.style.opacity = "1";
+
+                for (let i = 0; i < text.length; i++) {
+                    textElement.textContent += text.charAt(i);
+                    await new Promise((r) => setTimeout(r, 50));
+                }
+            };
+
+            const fadeOutText = async () => {
+                textElement.style.opacity = "0";
+                await new Promise((r) => setTimeout(r, 500));
+            };
+
+            const runAnimation = async () => {
+                await new Promise((r) => setTimeout(r, 500));
+
+                if (phrases[0]) {
+                    await typeText(phrases[0]);
+                    await new Promise((r) => setTimeout(r, 600));
+                    await fadeOutText();
+                }
+
+                if (phrases[1]) {
+                    await typeText(phrases[1]);
+                    await new Promise((r) => setTimeout(r, 600));
+                    await fadeOutText();
+                }
+
+                overlay.style.transition = "opacity 1s ease-out";
+                overlay.style.opacity = "0";
+
+                sessionStorage.setItem("hasSeenIntro", "true");
+
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                    overlay.style.pointerEvents = "none";
+                }, 1000);
+            };
+
+            runAnimation();
+        } else {
+            overlay.style.display = "none";
+            overlay.style.pointerEvents = "none";
+        }
+    };
+
+    // Ejecutar al cargar
+    setupIntro();
 </script>
