@@ -31,13 +31,50 @@ export interface ContactContent extends PageContent {
   };
 }
 
+export interface ExperienceItem {
+  role: string;
+  company: string;
+  period: string;
+  companySubtitle?: string;
+  tasks: string[];
+}
+
+export interface EducationItem {
+  degree: string;
+  period: string;
+  institution: string;
+}
+
+export interface AwardItem {
+  title: string;
+  year: string;
+  category?: string;
+  description: string;
+}
+
+export interface SkillCategory {
+  title: string;
+  items: string[];
+}
+
+export interface PersonalProjects {
+  title: string;
+  linkText: string;
+  items: string[];
+}
+
 export interface AboutMeContent extends PageContent {
+  greeting: string;
   bio: string[];
-  experience?: {
-    year: string;
-    title: string;
-    description: string;
-  }[];
+  experienceTitle: string;
+  experience: ExperienceItem[];
+  educationTitle: string;
+  education: EducationItem[];
+  awardsTitle: string;
+  awards: AwardItem[];
+  skillsTitle: string;
+  skills: SkillCategory[];
+  personalProjects: PersonalProjects;
 }
 
 export interface InspoContent extends PageContent {

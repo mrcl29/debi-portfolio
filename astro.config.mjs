@@ -13,6 +13,16 @@ export default defineConfig({
     routing: 'manual',
   },
 
+  image: {
+    domains: ['picsum.photos', 'fastly.picsum.photos'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.picsum.photos',
+      },
+    ],
+  },
+
   vite: {
     plugins: [tailwindcss()],
   },

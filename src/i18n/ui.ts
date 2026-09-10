@@ -31,14 +31,94 @@ export const ui: Record<keyof typeof languages, langDict> = {
             },
             aboutMe: {
                 title: 'Sobre Mí',
+                greeting: '¡Hola!',
                 bio: [
-                    "Soy Debora, diseñadora gráfica con base en Barcelona. Mi trabajo se centra en la intersección entre la estética minimalista y la funcionalidad radical.",
-                    "Con más de 5 años de experiencia en branding y dirección de arte, ayudo a las marcas a encontrar su voz visual a través de conceptos sólidos y ejecución impecable."
+                    'Diseñadora gráfica creativa e inquieta, con una curiosidad constante por aprender, explorar nuevas ideas y afrontar cada proyecto como una oportunidad para crecer.',
+                    'Me gusta encontrar el equilibrio entre estrategia y creatividad, buscando siempre la solución más adecuada para cada reto.',
+                    'Disfruto construyendo conceptos con personalidad, cuidando los detalles y convirtiendo ideas en experiencias visuales con sentido.'
                 ],
+                experienceTitle: 'EXPERIENCIA LABORAL',
                 experience: [
-                    { year: '2023 - Pres.', title: 'Freelance Art Director', description: 'Trabajando con clientes internacionales en proyectos de identidad y digital.' },
-                    { year: '2020 - 2022', title: 'Senior Designer @ Studio-X', description: 'Liderando el equipo de diseño en proyectos de branding y editorial.' }
-                ]
+                    {
+                        role: 'Diseñadora Gráfica Corporativa',
+                        company: 'Esment',
+                        period: '2025 – Actualidad',
+                        tasks: [
+                            'Diseñadora gráfica en el departamento de Comunicación y Marketing.',
+                            'Miembro del equipo de preimpresión de Esment Impremta.',
+                            'Gestión transversal entre ambos departamentos.',
+                            'Dirección creativa, diseño y producción gráfica de eventos corporativos.',
+                            'Desarrollo de materiales de comunicación online y offline.'
+                        ]
+                    },
+                    {
+                        role: 'Diseñadora Gráfica',
+                        company: 'GOB',
+                        period: '2023',
+                        companySubtitle: "Grup Balear d'Ornitologia i Defensa de la Naturalesa",
+                        tasks: [
+                            'Diseño de piezas gráficas digitales para redes sociales y plataformas digitales.',
+                            'Creación del logotipo conmemorativo del 50 aniversario de la organización.',
+                            'Desarrollo de aplicaciones visuales para campañas de comunicación.'
+                        ]
+                    }
+                ],
+                educationTitle: 'FORMACIÓN',
+                education: [
+                    {
+                        degree: 'Máster en Dirección de Arte y Creatividad Audiovisual',
+                        period: '2025 – 2026',
+                        institution: 'SHIFTA by ELISAVA · Barcelona'
+                    },
+                    {
+                        degree: 'Grado Universitario en Diseño Gráfico',
+                        period: '2021 – 2025',
+                        institution: 'EASDIB · Palma'
+                    }
+                ],
+                awardsTitle: 'PREMIOS Y PUBLICACIONES',
+                awards: [
+                    {
+                        title: 'Finalista · Art Jove 2024',
+                        year: '2023',
+                        category: 'Especialidad Diseño Gráfico',
+                        description: 'Seleccionada como finalista del certamen. Desarrollo de la propuesta de identidad gráfica para la edición siguiente.'
+                    },
+                    {
+                        title: 'Ilustradora · Toponímia de sa Bastida i la seva contrada',
+                        year: '2024',
+                        description: 'Realización de ilustraciones de paisajes y lugares representativos para la publicación.'
+                    }
+                ],
+                skillsTitle: 'Habilidades',
+                skills: [
+                    {
+                        title: 'Software',
+                        items: [
+                            'Adobe InDesign',
+                            'Adobe Photoshop',
+                            'Adobe Illustrator',
+                            'Adobe Lightroom',
+                            'Adobe XD',
+                            'Adobe Premiere Pro',
+                            'Adobe Dimension'
+                        ]
+                    },
+                    {
+                        title: 'Otras herramientas',
+                        items: ['Figma', 'SketchUp']
+                    }
+                ],
+                personalProjects: {
+                    title: 'Proyectos Personales',
+                    linkText: 'Behance ↗',
+                    items: [
+                        'Proyectos de branding.',
+                        'Dirección de arte.',
+                        'Animación y stop motion.',
+                        'Modelado y visualización 3D.'
+                    ]
+                }
             },
             contact: {
                 title: 'Contacto',
@@ -104,14 +184,94 @@ export const ui: Record<keyof typeof languages, langDict> = {
             },
             aboutMe: {
                 title: 'About Me',
+                greeting: 'Hello!',
                 bio: [
-                    "I am Debora, a graphic designer based in Barcelona. My work focuses on the intersection between minimalist aesthetics and radical functionality.",
-                    "With over 5 years of experience in branding and art direction, I help brands find their visual voice through solid concepts and impeccable execution."
+                    'Creative and inquisitive graphic designer, driven by a constant curiosity to learn, explore new ideas, and approach every project as an opportunity to grow.',
+                    'I enjoy finding the balance between strategy and creativity, always seeking the most fitting solution for each challenge.',
+                    'I take pride in building concepts with personality, attending to the details, and turning ideas into meaningful visual experiences.'
                 ],
+                experienceTitle: 'WORK EXPERIENCE',
                 experience: [
-                    { year: '2023 - Pres.', title: 'Freelance Art Director', description: 'Working with international clients on identity and digital projects.' },
-                    { year: '2020 - 2022', title: 'Senior Designer @ Studio-X', description: 'Leading the design team on branding and editorial projects.' }
-                ]
+                    {
+                        role: 'Corporate Graphic Designer',
+                        company: 'Esment',
+                        period: '2025 – Present',
+                        tasks: [
+                            'Graphic designer in the Communication and Marketing department.',
+                            'Member of the Esment Impremta prepress team.',
+                            'Cross-departmental management between both teams.',
+                            'Creative direction, design, and graphic production of corporate events.',
+                            'Development of online and offline communication materials.'
+                        ]
+                    },
+                    {
+                        role: 'Graphic Designer',
+                        company: 'GOB',
+                        period: '2023',
+                        companySubtitle: "Grup Balear d'Ornitologia i Defensa de la Naturalesa",
+                        tasks: [
+                            'Design of digital graphic assets for social media and digital platforms.',
+                            'Creation of the commemorative logo for the 50th anniversary of the organization.',
+                            'Development of visual assets for communication campaigns.'
+                        ]
+                    }
+                ],
+                educationTitle: 'EDUCATION',
+                education: [
+                    {
+                        degree: 'Master in Art Direction and Audiovisual Creativity',
+                        period: '2025 – 2026',
+                        institution: 'SHIFTA by ELISAVA · Barcelona'
+                    },
+                    {
+                        degree: "Bachelor's Degree in Graphic Design",
+                        period: '2021 – 2025',
+                        institution: 'EASDIB · Palma'
+                    }
+                ],
+                awardsTitle: 'AWARDS & PUBLICATIONS',
+                awards: [
+                    {
+                        title: 'Finalist · Art Jove 2024',
+                        year: '2023',
+                        category: 'Graphic Design Category',
+                        description: 'Selected as a finalist in the competition. Development of the visual identity proposal for the following edition.'
+                    },
+                    {
+                        title: 'Illustrator · Toponímia de sa Bastida i la seva contrada',
+                        year: '2024',
+                        description: 'Creation of landscape illustrations and representative landmarks for the publication.'
+                    }
+                ],
+                skillsTitle: 'Skills',
+                skills: [
+                    {
+                        title: 'Software',
+                        items: [
+                            'Adobe InDesign',
+                            'Adobe Photoshop',
+                            'Adobe Illustrator',
+                            'Adobe Lightroom',
+                            'Adobe XD',
+                            'Adobe Premiere Pro',
+                            'Adobe Dimension'
+                        ]
+                    },
+                    {
+                        title: 'Other tools',
+                        items: ['Figma', 'SketchUp']
+                    }
+                ],
+                personalProjects: {
+                    title: 'Personal Projects',
+                    linkText: 'Behance ↗',
+                    items: [
+                        'Branding projects.',
+                        'Art direction.',
+                        'Animation and stop motion.',
+                        '3D modeling and visualization.'
+                    ]
+                }
             },
             contact: {
                 title: 'Contact',
@@ -177,14 +337,94 @@ export const ui: Record<keyof typeof languages, langDict> = {
             },
             aboutMe: {
                 title: 'Sobre Mi',
+                greeting: 'Hola!',
                 bio: [
-                    "Sóc la Debora, dissenyadora gràfica amb base a Barcelona. La meva feina es centra en la intersecció entre l'estètica minimalista i la funcionalitat radical.",
-                    "Amb més de 5 anys d'experiència en branding i direcció d'art, ajudo a les marques a trobar la seva veu visual a través de conceptes sòlids i execució impecable."
+                    'Dissenyadora gràfica creativa i inquieta, amb una curiositat constant per aprendre, explorar noves idees i afrontar cada projecte com una oportunitat per créixer.',
+                    "M'agrada trobar l'equilibri entre estratègia i creativitat, buscant sempre la solució més adequada per a cada repte.",
+                    'Gaudeixo construint conceptes amb personalitat, cuidant els detalls i transformant idees en experiències visuals amb sentit.'
                 ],
+                experienceTitle: 'EXPERIÈNCIA LABORAL',
                 experience: [
-                    { year: '2023 - Pres.', title: 'Freelance Art Director', description: 'Treballant amb clients internacionals en projectes d\'identitat i digital.' },
-                    { year: '2020 - 2022', title: 'Senior Designer @ Studio-X', description: 'Liderant l\'equip de disseny en projectes de branding i editorial.' }
-                ]
+                    {
+                        role: 'Dissenyadora Gràfica Corporativa',
+                        company: 'Esment',
+                        period: '2025 – Actualitat',
+                        tasks: [
+                            'Dissenyadora gràfica al departament de Comunicació i Màrqueting.',
+                            'Membre de l\'equip de preimpressió d\'Esment Impremta.',
+                            'Gestió transversal entre ambdós departaments.',
+                            'Direcció creativa, disseny i producció gràfica d\'esdeveniments corporatius.',
+                            'Desenvolupament de materials de comunicació online i offline.'
+                        ]
+                    },
+                    {
+                        role: 'Dissenyadora Gràfica',
+                        company: 'GOB',
+                        period: '2023',
+                        companySubtitle: "Grup Balear d'Ornitologia i Defensa de la Naturalesa",
+                        tasks: [
+                            'Disseny de peces gràfiques digitals per a xarxes socials i plataformes digitals.',
+                            'Creació del logotip commemoratiu del 50è aniversari de l\'organització.',
+                            'Desenvolupament d\'aplicacions visuals per a campanyes de comunicació.'
+                        ]
+                    }
+                ],
+                educationTitle: 'FORMACIÓ',
+                education: [
+                    {
+                        degree: 'Màster en Direcció d\'Art i Creativitat Audiovisual',
+                        period: '2025 – 2026',
+                        institution: 'SHIFTA by ELISAVA · Barcelona'
+                    },
+                    {
+                        degree: 'Grau Universitari en Disseny Gràfic',
+                        period: '2021 – 2025',
+                        institution: 'EASDIB · Palma'
+                    }
+                ],
+                awardsTitle: 'PREMIS I PUBLICACIONS',
+                awards: [
+                    {
+                        title: 'Finalista · Art Jove 2024',
+                        year: '2023',
+                        category: 'Especialitat Disseny Gràfic',
+                        description: 'Seleccionada com a finalista del certamen. Desenvolupament de la proposta d\'identitat gràfica per a l\'edició següent.'
+                    },
+                    {
+                        title: 'Il·lustradora · Toponímia de sa Bastida i la seva contrada',
+                        year: '2024',
+                        description: 'Realització d\'il·lustracions de paisatges i indrets representatius per a la publicació.'
+                    }
+                ],
+                skillsTitle: 'Habilitats',
+                skills: [
+                    {
+                        title: 'Software',
+                        items: [
+                            'Adobe InDesign',
+                            'Adobe Photoshop',
+                            'Adobe Illustrator',
+                            'Adobe Lightroom',
+                            'Adobe XD',
+                            'Adobe Premiere Pro',
+                            'Adobe Dimension'
+                        ]
+                    },
+                    {
+                        title: 'Altres eines',
+                        items: ['Figma', 'SketchUp']
+                    }
+                ],
+                personalProjects: {
+                    title: 'Projectes Personals',
+                    linkText: 'Behance ↗',
+                    items: [
+                        'Projectes de branding.',
+                        'Direcció d\'art.',
+                        'Animació i stop motion.',
+                        'Modelatge i visualització 3D.'
+                    ]
+                }
             },
             contact: {
                 title: 'Contacte',
@@ -199,7 +439,7 @@ export const ui: Record<keyof typeof languages, langDict> = {
                     email: 'Email',
                     message: 'Missatge',
                     submit: 'Enviar',
-                    success: '¡Missatge enviat amb èxit!'
+                    success: 'Missatge enviat amb èxit!'
                 }
             },
             inspo: {

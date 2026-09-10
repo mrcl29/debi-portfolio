@@ -1,18 +1,19 @@
 {
-  "name": "",
+  "name": "debi-portfolio",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "check": "astro check",
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.9",
-    "@tailwindcss/vite": "^4.1.18",
-    "astro": "^6.1.8",
-    "tailwindcss": "^4.1.18",
+    "@astrojs/check": "0.9.10",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "7.3.2",
+    "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3"
   }
 }

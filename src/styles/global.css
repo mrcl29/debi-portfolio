@@ -148,8 +148,8 @@ html[data-page="index"] main {
 
 @media (min-width: 768px) {
   main {
-    width: 50%;
-    margin-left: 50%;
+    width: 60%;
+    margin-left: 40%;
   }
 }
 

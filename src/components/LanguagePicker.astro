@@ -1,9 +1,7 @@
 ---
 // src/components/LanguagePicker.astro
 import { languages } from '@/i18n/ui';
-import { flags } from '@/i18n/flags';
 import { getLangFromUrl } from '@/i18n/utils';
-import { Image } from 'astro:assets';
 
 // Definimos el tipo basado en las claves de la configuración central de idiomas
 type Lang = keyof typeof languages;
@@ -14,7 +12,6 @@ const currentLang = getLangFromUrl(Astro.url);
 const { pathname } = Astro.url;
 
 // IMPORTANTE: Usamos un Regex con '^' para asegurarnos de reemplazar SOLO al inicio de la URL
-// Esto evita errores si tienes una página llamada /es/fiestas (no rompería la palabra fiestas)
 const subpath = pathname.replace(new RegExp(`^/${currentLang}`), '');
 const languageLabels: Record<Lang, string> = {
   es: 'ES',
@@ -23,21 +20,19 @@ const languageLabels: Record<Lang, string> = {
 };
 ---
 
-<div class="relative inline-block text-left font-plain">
+<div class="lang-picker-container relative inline-block text-left font-plain">
   <button
-    id="lang-menu-button"
     aria-label="Cambiar idioma"
     aria-expanded="false"
-    class="bg-transparent border-none cursor-pointer p-0 transition-opacity duration-200 ease-in-out hover:opacity-70 text-(--primary) text-sm font-bold tracking-widest"
+    class="lang-menu-button bg-transparent border-none cursor-pointer p-0 transition-opacity duration-200 ease-in-out hover:opacity-70 text-(--primary) text-sm font-bold tracking-widest"
   >
     {languageLabels[currentLang]}
   </button>
 
   <ul
-    id="lang-menu-list"
-    class="absolute top-[120%] right-0 bg-(--background) border border-(--primary)/10 rounded-sm shadow-xl py-2 list-none min-w-20 z-50 transition-all duration-200 ease-in-out opacity-100 translate-y-0 [&.menu-closed]:opacity-0 [&.menu-closed]:-translate-y-2 [&.menu-closed]:pointer-events-none menu-closed"
+    class="lang-menu-list absolute top-[120%] right-0 bg-(--background) border border-(--primary)/10 rounded-sm shadow-xl py-2 list-none min-w-20 z-50 transition-all duration-200 ease-in-out opacity-100 translate-y-0 [&.menu-closed]:opacity-0 [&.menu-closed]:-translate-y-2 [&.menu-closed]:pointer-events-none menu-closed"
   >
-    {Object.entries(languages).map(([lang, label]) => {
+    {Object.keys(languages).map((lang) => {
       const langKey = lang as Lang;
       const isActive = langKey === currentLang;
 
@@ -60,43 +55,61 @@ const languageLabels: Record<Lang, string> = {
 </div>
 
 <script>
-  function initLangMenu() {
-    const button = document.getElementById('lang-menu-button');
-    const list = document.getElementById('lang-menu-list');
+  let docListenersInitialized = false;
 
-    if (button && list) {
-      // Toggle menú
-      button.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isExpanded = button.getAttribute('aria-expanded') === 'true';
-
-        button.setAttribute('aria-expanded', !isExpanded ? 'true' : 'false');
-        list.classList.toggle('menu-closed');
-      });
-
-      // Cerrar al hacer click fuera
-      const closeMenu = (e: MouseEvent) => {
-        if (!button.contains(e.target as Node) && !list.contains(e.target as Node)) {
-          list.classList.add('menu-closed');
-          button.setAttribute('aria-expanded', 'false');
-        }
-      };
-
-      document.addEventListener('click', closeMenu);
-
-      // Cerrar al presionar Escape (Accesibilidad)
-      const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          list.classList.add('menu-closed');
-          button.setAttribute('aria-expanded', 'false');
-        }
-      };
-
-      document.addEventListener('keydown', handleEscape);
-    }
+  function closeAllMenus() {
+    const lists = document.querySelectorAll('.lang-menu-list');
+    const buttons = document.querySelectorAll('.lang-menu-button');
+    lists.forEach((list) => list.classList.add('menu-closed'));
+    buttons.forEach((btn) => btn.setAttribute('aria-expanded', 'false'));
   }
 
-  // Ejecutar al cargar y tras transiciones
-  initLangMenu();
-  document.addEventListener('astro:after-swap', initLangMenu);
+  function initGlobalListeners() {
+    if (docListenersInitialized) return;
+    docListenersInitialized = true;
+
+    // Cerrar al hacer click fuera
+    document.addEventListener('click', (e) => {
+      const target = e.target as Node;
+      const containers = document.querySelectorAll('.lang-picker-container');
+      let clickedInsideAny = false;
+      containers.forEach((container) => {
+        if (container.contains(target)) clickedInsideAny = true;
+      });
+      if (!clickedInsideAny) {
+        closeAllMenus();
+      }
+    });
+
+    // Cerrar al presionar Escape (Accesibilidad)
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeAllMenus();
+      }
+    });
+  }
+
+  function initLangMenu() {
+    initGlobalListeners();
+
+    const containers = document.querySelectorAll('.lang-picker-container');
+    containers.forEach((container) => {
+      const button = container.querySelector('.lang-menu-button') as HTMLButtonElement | null;
+      const list = container.querySelector('.lang-menu-list') as HTMLElement | null;
+
+      if (button && list) {
+        button.onclick = (e) => {
+          e.stopPropagation();
+          const isExpanded = button.getAttribute('aria-expanded') === 'true';
+          closeAllMenus();
+          if (!isExpanded) {
+            button.setAttribute('aria-expanded', 'true');
+            list.classList.remove('menu-closed');
+          }
+        };
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', initLangMenu);
 </script>

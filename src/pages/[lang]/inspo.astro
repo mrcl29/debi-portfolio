@@ -53,21 +53,34 @@ const shuffledImages = [...images].sort(() => Math.random() - 0.5);
 </MainLayout>
 
 <script>
-    let animationId: number;
-    let scrollPos = 0;
-    let targetScrollPos = 0;
-    const autoSpeed = 0.5;
-    let isDragging = false;
-    let lastY = 0;
-    let velocity = 0;
+    let animationId: number | null = null;
+    let cleanupListeners: (() => void) | null = null;
+
+    function cleanupInspo() {
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
+        if (cleanupListeners) {
+            cleanupListeners();
+            cleanupListeners = null;
+        }
+    }
 
     function initInspoMarquee() {
-        if (animationId) cancelAnimationFrame(animationId);
-        
+        cleanupInspo();
+
         const container = document.getElementById('inspo-container') as HTMLElement | null;
         const track = document.getElementById('inspo-track') as HTMLElement | null;
         const grid1 = document.getElementById('inspo-grid-1') as HTMLElement | null;
         if (!track || !grid1 || !container) return;
+
+        let scrollPos = 0;
+        let targetScrollPos = 0;
+        const autoSpeed = 0.5;
+        let isDragging = false;
+        let lastY = 0;
+        let velocity = 0;
 
         // Shuffle
         const items = Array.from(grid1.children);
@@ -83,49 +96,65 @@ const shuffledImages = [...images].sort(() => Math.random() - 0.5);
         grid2.id = 'inspo-grid-2';
         track.appendChild(grid2);
 
-        // Manual Scroll / Drag Logic
-        container.addEventListener('mousedown', (e) => {
+        // Event Handlers
+        const onMouseDown = (e: MouseEvent) => {
             isDragging = true;
             lastY = e.pageY;
             velocity = 0;
-        });
+        };
 
-        window.addEventListener('mousemove', (e) => {
+        const onMouseMove = (e: MouseEvent) => {
             if (!isDragging) return;
             const deltaY = e.pageY - lastY;
             targetScrollPos -= deltaY;
             lastY = e.pageY;
             velocity = -deltaY;
-        });
+        };
 
-        window.addEventListener('mouseup', () => {
+        const onMouseUp = () => {
             isDragging = false;
-        });
+        };
 
-        // Touch support
-        container.addEventListener('touchstart', (e) => {
+        const onTouchStart = (e: TouchEvent) => {
             isDragging = true;
             lastY = e.touches[0].pageY;
             velocity = 0;
-        }, { passive: true });
+        };
 
-        window.addEventListener('touchmove', (e) => {
+        const onTouchMove = (e: TouchEvent) => {
             if (!isDragging) return;
             const deltaY = e.touches[0].pageY - lastY;
             targetScrollPos -= deltaY;
             lastY = e.touches[0].pageY;
             velocity = -deltaY;
-        }, { passive: false });
+        };
 
-        window.addEventListener('touchend', () => {
+        const onTouchEnd = () => {
             isDragging = false;
-        });
+        };
 
-        // Mouse Wheel / Trackpad Scroll
-        container.addEventListener('wheel', (e) => {
+        const onWheel = (e: WheelEvent) => {
             e.preventDefault();
-            targetScrollPos += e.deltaY * 0.8; // Reduced multiplier for more control
-        }, { passive: false });
+            targetScrollPos += e.deltaY * 0.8;
+        };
+
+        container.addEventListener('mousedown', onMouseDown);
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+        container.addEventListener('touchstart', onTouchStart, { passive: true });
+        window.addEventListener('touchmove', onTouchMove, { passive: false });
+        window.addEventListener('touchend', onTouchEnd);
+        container.addEventListener('wheel', onWheel, { passive: false });
+
+        cleanupListeners = () => {
+            container.removeEventListener('mousedown', onMouseDown);
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('mouseup', onMouseUp);
+            container.removeEventListener('touchstart', onTouchStart);
+            window.removeEventListener('touchmove', onTouchMove);
+            window.removeEventListener('touchend', onTouchEnd);
+            container.removeEventListener('wheel', onWheel);
+        };
 
         function animate() {
             if (!track || !grid1) return;
@@ -163,11 +192,8 @@ const shuffledImages = [...images].sort(() => Math.random() - 0.5);
         animate();
     }
 
-    initInspoMarquee();
-    document.addEventListener('astro:after-swap', initInspoMarquee);
-    document.addEventListener('astro:before-swap', () => {
-        if (animationId) cancelAnimationFrame(animationId);
-    });
+    document.addEventListener('astro:page-load', initInspoMarquee);
+    document.addEventListener('astro:before-swap', cleanupInspo);
 </script>
 
 <style>

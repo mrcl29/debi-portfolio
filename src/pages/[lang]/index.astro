@@ -13,17 +13,17 @@ export function getStaticPaths() {
 const { lang } = Astro.params;
 const t = useTranslations(lang);
 
-// Imágenes para la sección de "Último Proyecto"
+// Imágenes optimizadas para la sección de "Último Proyecto"
 const lastProjectImages = [
-  '/assets/art_direction/editorial_de_moda/1.jpg',
-  '/assets/art_direction/editorial_de_moda/2.jpg',
-  '/assets/art_direction/editorial_de_moda/3.jpg',
-  '/assets/art_direction/editorial_de_moda/4.jpg',
+  '/assets/art_direction/editorial_de_moda/1.webp',
+  '/assets/art_direction/editorial_de_moda/2.webp',
+  '/assets/art_direction/editorial_de_moda/3.webp',
+  '/assets/art_direction/editorial_de_moda/4.webp',
 ];
 ---
 
 <MainLayout title={t.pages.index.title} lang={lang as string} isIndex={true}>
-  <div class="index-content-container relative z-40 p-16 flex flex-col min-h-screen bg-transparent animate-in">
+  <div class="index-content-container relative z-40 p-6 pt-24 md:p-16 flex flex-col min-h-screen bg-transparent animate-in">
     <div class="spacer grow min-h-screen"></div>
 
     <!-- Last Project Section -->
@@ -67,8 +67,7 @@ const lastProjectImages = [
     if (title) await typeTitle(title);
   }
 
-  initIndexTypewriter();
-  document.addEventListener('astro:after-swap', initIndexTypewriter);
+  document.addEventListener('astro:page-load', initIndexTypewriter);
 </script>
 
 <style>

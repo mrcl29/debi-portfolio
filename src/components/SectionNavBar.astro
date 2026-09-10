@@ -9,20 +9,23 @@ interface Props {
 const { sections } = Astro.props as Props;
 ---
 
-<nav class="section-nav-container relative z-40 p-16 flex flex-col min-h-screen bg-transparent animate-in">
-  <div class="spacer grow"></div>
-  <ul class="flex flex-col list-none m-0 p-0">
+<nav class="section-nav-container relative z-40 p-6 pt-24 md:p-8 lg:p-10 flex flex-col min-h-screen bg-transparent animate-in">
+  <div class="spacer grow shrink-0"></div>
+  <ul class="flex flex-col list-none m-0 p-0 gap-1 md:gap-2">
     {
       sections?.map((section) => {
         const SectionComponent = section.component;
         return (
-          <li class="section-item group opacity-0" data-id={section.id}>
-            <button 
-              class="section-title w-full text-left text-(--primary) text-[7vw] md:text-[7vw] font-light leading-[0.8] uppercase block tracking-tighter hover:font-extrabold transition-all duration-300 cursor-pointer appearance-none bg-transparent border-none p-0 h-[7vw] md:h-[7vw]"
-              data-text={section.title}
-            >
-              {/* Text injected via JS */}
-            </button>
+          <li class="section-item group opacity-0 flex flex-col m-0 p-0" data-id={section.id}>
+            <div class="flex items-center m-0 p-0">
+              <button 
+                type="button"
+                class="section-title w-full text-left text-(--primary) text-3xl sm:text-4xl md:text-[4.8vw] lg:text-[5vw] xl:text-[5.3vw] font-light leading-none uppercase whitespace-nowrap tracking-tighter hover:font-extrabold transition-all duration-300 cursor-pointer appearance-none bg-transparent border-none p-0 m-0 h-[1.15em] flex items-center"
+                data-text={section.title}
+              >
+                {section.title}
+              </button>
+            </div>
             <div class="section-content max-h-0 opacity-0 overflow-hidden transition-all duration-500 ease-in-out">
               <div class="py-8">
                 {SectionComponent && <SectionComponent />}
@@ -44,34 +47,33 @@ const { sections } = Astro.props as Props;
     if (!nav || !spacer || items.length === 0) return;
 
     function fixSpacer() {
-      if (!spacer) return;
-      spacer.style.flexBasis = 'auto';
-      spacer.style.flexGrow = '1';
+      if (!spacer || !nav) return;
 
-      const openStates = Array.from(items).map(item => {
-        const content = item.querySelector('.section-content') as HTMLElement;
-        const isOpen = !content.classList.contains('max-h-0');
-        return { content, isOpen, maxHeight: content.style.maxHeight };
-      });
+      const navHeight = window.innerHeight;
+      const navStyle = window.getComputedStyle(nav);
+      const paddingTop = parseFloat(navStyle.paddingTop) || 0;
+      const paddingBottom = parseFloat(navStyle.paddingBottom) || 0;
 
-      openStates.forEach(state => {
-        if (state.isOpen) {
-          state.content.classList.add('max-h-0');
-          state.content.style.maxHeight = '0px';
+      const listItems = Array.from(items);
+      let totalClosedItemsHeight = 0;
+      listItems.forEach(item => {
+        const btn = item.querySelector('.section-title') as HTMLElement;
+        if (btn) {
+          totalClosedItemsHeight += btn.offsetHeight;
         }
       });
 
-      const height = spacer.offsetHeight;
+      const ul = nav.querySelector('ul') as HTMLElement;
+      const gap = ul ? parseFloat(window.getComputedStyle(ul).gap) || 0 : 0;
+      totalClosedItemsHeight += gap * Math.max(0, listItems.length - 1);
 
-      openStates.forEach(state => {
-        if (state.isOpen) {
-          state.content.classList.remove('max-h-0');
-          state.content.style.maxHeight = state.maxHeight;
-        }
-      });
+      const availableHeight = navHeight - paddingTop - paddingBottom;
+      const targetHeight = Math.max(0, availableHeight - totalClosedItemsHeight);
 
       spacer.style.flexGrow = '0';
-      spacer.style.flexBasis = `${height}px`;
+      spacer.style.flexShrink = '0';
+      spacer.style.flexBasis = `${targetHeight}px`;
+      spacer.style.height = `${targetHeight}px`;
     }
 
     // --- Typewriter Logic ---
@@ -99,45 +101,58 @@ const { sections } = Astro.props as Props;
     fixSpacer();
     runTypewriterSequence();
 
+    if (document.fonts) {
+      document.fonts.ready.then(fixSpacer);
+    }
+
     window.removeEventListener('resize', fixSpacer);
     window.addEventListener('resize', fixSpacer);
+
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        window.removeEventListener('resize', fixSpacer);
+      },
+      { once: true }
+    );
 
     items.forEach(item => {
       const title = item.querySelector('.section-title') as HTMLElement;
       const content = item.querySelector('.section-content') as HTMLElement;
 
-      title?.addEventListener('click', () => {
-        const isOpen = !content.classList.contains('max-h-0');
+      if (title && content) {
+        title.onclick = (e) => {
+          e.preventDefault();
+          const isOpen = !content.classList.contains('max-h-0');
 
-        // Cerrar otros
-        items.forEach(otherItem => {
-          if (otherItem !== item) {
-            const otherTitle = otherItem.querySelector('.section-title') as HTMLElement;
-            const otherContent = otherItem.querySelector('.section-content') as HTMLElement;
-            otherContent.classList.add('max-h-0', 'opacity-0');
-            otherContent.style.maxHeight = '0px';
-            otherTitle?.classList.remove('font-extrabold');
+          // Cerrar otros
+          items.forEach(otherItem => {
+            if (otherItem !== item) {
+              const otherTitle = otherItem.querySelector('.section-title') as HTMLElement;
+              const otherContent = otherItem.querySelector('.section-content') as HTMLElement;
+              otherContent.classList.add('max-h-0', 'opacity-0');
+              otherContent.style.maxHeight = '0px';
+              otherTitle?.classList.remove('font-extrabold');
+            }
+          });
+
+          if (!isOpen) {
+            // Abrir actual
+            content.classList.remove('max-h-0', 'opacity-0');
+            content.style.maxHeight = content.scrollHeight + 'px';
+            title.classList.add('font-extrabold');
+          } else {
+            // Cerrar actual
+            content.classList.add('max-h-0', 'opacity-0');
+            content.style.maxHeight = '0px';
+            title.classList.remove('font-extrabold');
           }
-        });
-
-        if (!isOpen) {
-          // Abrir actual
-          content.classList.remove('max-h-0', 'opacity-0');
-          content.style.maxHeight = content.scrollHeight + 'px';
-          title?.classList.add('font-extrabold');
-        } else {
-          // Cerrar actual
-          content.classList.add('max-h-0', 'opacity-0');
-          content.style.maxHeight = '0px';
-          title?.classList.remove('font-extrabold');
-        }
-      });
+        };
+      }
     });
   }
 
-  // Inicialización segura con ClientRouter
-  initSections();
-  document.addEventListener('astro:after-swap', initSections);
+  document.addEventListener('astro:page-load', initSections);
 </script>
 
 <style>

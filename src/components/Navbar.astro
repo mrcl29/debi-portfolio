@@ -1,5 +1,9 @@
 ---
+// src/components/Navbar.astro
 import { getLangFromUrl, useTranslations } from '@/i18n/utils';
+import { ownerName } from '@/constants/constants';
+import ThemeToggle from './ThemeToggle.astro';
+import LanguagePicker from './LanguagePicker.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -14,39 +18,118 @@ const routes: Record<keyof typeof t.nav, string> = {
 };
 
 const { pathname } = Astro.url;
-// Mejoramos la detección de index
 const isIndex = pathname.replace(/\/$/, '') === `/${lang}` || pathname === '/';
-
-// Normalizamos la URL actual (quitando slash final) para comparar correctamente
 const currentPath = pathname.replace(/\/$/, '') || `/${lang}`;
 
-// Filtramos las entradas para que el último proyecto solo aparezca en el index
+// Entradas fijas para la navegación estándar (4 ítems base)
+const standardNavEntries = Object.entries(t.nav).filter(([key]) => key !== 'lastProject');
+const lastProjectEntry = Object.entries(t.nav).find(([key]) => key === 'lastProject');
 const navEntries = Object.entries(t.nav).filter(([key]) => isIndex || key !== 'lastProject');
 ---
 
-<nav class="fixed inset-y-0 left-0 w-full md:w-1/2 z-50 p-16 flex flex-col justify-end bg-transparent pointer-events-none overflow-hidden">
+<!-- ========================================== -->
+<!-- 1. MÓVIL (< md): Menú desplegable (Drawer) -->
+<!-- ========================================== -->
+
+<!-- Símbolo interactivo fijado a la izquierda (solo móviles) -->
+<button
+  id="drawer-toggle"
+  type="button"
+  aria-label="Abrir menú de navegación"
+  aria-expanded="false"
+  class="md:hidden fixed top-6 left-6 z-[60] flex items-center justify-center w-11 h-11 rounded-full bg-(--background)/80 hover:bg-(--background) backdrop-blur-md border border-(--primary)/20 text-(--primary) cursor-pointer transition-all duration-300 shadow-sm group focus:outline-hidden"
+>
+  <span class="sr-only">Toggle navigation</span>
+  <div class="relative w-5 h-3 flex flex-col justify-between items-center pointer-events-none">
+    <span class="nav-line block h-[2px] w-5 bg-current rounded-full transition-all duration-300 origin-center"></span>
+    <span class="nav-line block h-[2px] w-3 group-hover:w-5 bg-current rounded-full transition-all duration-300 origin-center"></span>
+  </div>
+</button>
+
+<!-- Backdrop oscurecido al abrirse el drawer móvil -->
+<div
+  id="drawer-backdrop"
+  class="md:hidden fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs z-50 opacity-0 pointer-events-none transition-opacity duration-500 ease-in-out"
+  aria-hidden="true"
+></div>
+
+<!-- Panel desplegable móvil -->
+<aside
+  id="drawer-panel"
+  aria-label="Menú principal móvil"
+  class="md:hidden fixed inset-y-0 left-0 h-screen w-full z-50 bg-(--background) text-(--primary) shadow-2xl -translate-x-full transition-transform duration-500 ease-in-out flex flex-col justify-between overflow-y-auto"
+>
+  <!-- Barra superior del panel móvil: VOL.2 + ThemeToggle + LanguagePicker -->
+  <div class="p-6 flex items-center justify-between border-b border-(--primary)/10 min-h-[72px]">
+    <div class="flex items-center pl-12">
+      <a
+        href={`/${lang}/`}
+        class="drawer-nav-link text-(--primary) text-2xl font-bold no-underline uppercase tracking-tighter hover:opacity-70 transition-opacity duration-300"
+      >
+        VOL.2
+      </a>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <ThemeToggle />
+      <LanguagePicker />
+    </div>
+  </div>
+
+  <!-- Índice de navegación móvil -->
+  <div class="p-8 flex-1 flex flex-col justify-end">
+    <ul class="flex flex-col list-none m-0 p-0 gap-4">
+      {
+        navEntries.map(([key, label]) => {
+          const routeKey = key as keyof typeof t.nav;
+          const href = routes[routeKey];
+          const normalizedHref = href.split('#')[0].replace(/\/$/, '');
+          const isActive = normalizedHref === currentPath && key !== 'lastProject';
+
+          return (
+            <li>
+              <a
+                href={href}
+                class={`drawer-nav-link text-(--primary) text-3xl sm:text-4xl leading-none no-underline transition-all duration-300 hover:font-extrabold uppercase block tracking-tighter ${
+                  isActive ? 'font-extrabold' : 'font-light'
+                }`}
+              >
+                {label}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+
+  <!-- Pie del panel móvil -->
+  <div class="p-8 pt-0 flex justify-between items-center text-xs opacity-40 uppercase tracking-widest font-plain">
+    <span>Debora Milenova</span>
+    <span>{ownerName} © {new Date().getFullYear()}</span>
+  </div>
+</aside>
+
+<!-- ======================================================== -->
+<!-- 2. TABLET Y ORDENADORES (>= md): Navegación fija original -->
+<!-- ======================================================== -->
+<nav class="hidden md:flex fixed inset-y-0 left-0 w-[40%] z-50 p-6 md:p-8 lg:p-10 flex-col justify-end bg-transparent pointer-events-none overflow-hidden">
   <ul
     id="nav-list"
-    class={`flex flex-col list-none m-0 p-0 pointer-events-auto transition-transform duration-500 ${isIndex ? 'translate-y-[14vw]' : ''}`}
+    class="relative flex flex-col list-none m-0 p-0 gap-1 md:gap-2 pointer-events-auto transition-transform duration-500 ease-in-out"
   >
     {
-      navEntries.map(([key, label]) => {
+      standardNavEntries.map(([key, label]) => {
         const routeKey = key as keyof typeof t.nav;
         const href = routes[routeKey];
         const normalizedHref = href.split('#')[0].replace(/\/$/, '');
-        const isActive = normalizedHref === currentPath && key !== 'lastProject';
-
-        const isLastProject = key === 'lastProject';
+        const isActive = normalizedHref === currentPath;
 
         return (
-          <li
-            id={isLastProject ? "nav-last-project" : undefined}
-            class={isLastProject ? "opacity-0 pointer-events-none transition-opacity duration-500" : ""}
-          >
+          <li class="flex items-center m-0 p-0">
             <a
-              id={isLastProject ? "nav-last-project-link" : undefined}
               href={href}
-              class={`text-(--primary) text-[7vw] md:text-[7vw] leading-none no-underline transition-all hover:font-extrabold uppercase block tracking-tighter ${isActive ? 'font-extrabold' : 'font-light'}`}
+              class={`text-(--primary) text-3xl sm:text-4xl md:text-[4.8vw] lg:text-[5vw] xl:text-[5.3vw] leading-none no-underline transition-all duration-300 hover:font-extrabold uppercase whitespace-nowrap tracking-tighter h-[1.15em] flex items-center m-0 p-0 ${isActive ? 'font-extrabold' : 'font-light'}`}
             >
               {label}
             </a>
@@ -54,11 +137,52 @@ const navEntries = Object.entries(t.nav).filter(([key]) => isIndex || key !== 'l
         );
       })
     }
+    {
+      isIndex && lastProjectEntry && (
+        <li
+          id="nav-last-project"
+          class="absolute top-full left-0 w-full mt-1 md:mt-2 opacity-0 pointer-events-none transition-opacity duration-500 flex items-center m-0 p-0"
+        >
+          <a
+            id="nav-last-project-link"
+            href={routes.lastProject}
+            class="text-(--primary) text-3xl sm:text-4xl md:text-[4.8vw] lg:text-[5vw] xl:text-[5.3vw] leading-none no-underline transition-all duration-300 hover:font-extrabold uppercase whitespace-nowrap tracking-tighter h-[1.15em] flex items-center m-0 p-0 font-light"
+          >
+            {lastProjectEntry[1]}
+          </a>
+        </li>
+      )
+    }
   </ul>
 </nav>
 
+<style>
+  #drawer-toggle.is-open .nav-line:first-child {
+    transform: translateY(5px) rotate(45deg);
+  }
+  #drawer-toggle.is-open .nav-line:last-child {
+    width: 1.25rem;
+    transform: translateY(-5px) rotate(-45deg);
+  }
+  #nav-list.show-last-project {
+    transform: translateY(calc(-1.15em - 0.5rem));
+  }
+  #nav-list.show-last-project #nav-last-project {
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>
+
 <script>
-  const setupNav = () => {
+  let navObserver: IntersectionObserver | null = null;
+
+  // Lógica de escritorio original (IntersectionObserver en index para #last-project)
+  function setupDesktopNav() {
+    if (navObserver) {
+      navObserver.disconnect();
+      navObserver = null;
+    }
+
     const navList = document.getElementById('nav-list');
     const lastProjectNav = document.getElementById('nav-last-project');
     const lastProjectLink = document.getElementById('nav-last-project-link');
@@ -67,24 +191,18 @@ const navEntries = Object.entries(t.nav).filter(([key]) => isIndex || key !== 'l
     if (!lastProjectNav || !navList) return;
 
     if (isIndex) {
-      // Intersection Observer para detectar cuando la sección del último proyecto es visible
-      const observer = new IntersectionObserver((entries) => {
+      navObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            lastProjectNav.classList.remove('opacity-0', 'pointer-events-none');
-            lastProjectNav.classList.add('opacity-100', 'pointer-events-auto');
-            navList.classList.remove('translate-y-[14vw]');
+            navList.classList.add('show-last-project');
             lastProjectLink?.classList.add('font-extrabold');
             lastProjectLink?.classList.remove('font-light');
           } else {
-            // Si el scroll está por encima de la sección, lo ocultamos y bajamos la lista
             if (entry.boundingClientRect.top > 0) {
-              lastProjectNav.classList.add('opacity-0', 'pointer-events-none');
-              lastProjectNav.classList.remove('opacity-100', 'pointer-events-auto');
-              navList.classList.add('translate-y-[14vw]');
+              navList.classList.remove('show-last-project');
+              lastProjectLink?.classList.remove('font-extrabold');
+              lastProjectLink?.classList.add('font-light');
             }
-            lastProjectLink?.classList.remove('font-extrabold');
-            lastProjectLink?.classList.add('font-light');
           }
         });
       }, {
@@ -92,11 +210,99 @@ const navEntries = Object.entries(t.nav).filter(([key]) => isIndex || key !== 'l
       });
 
       const section = document.getElementById('last-project');
-      if (section) observer.observe(section);
+      if (section) navObserver.observe(section);
     }
-  };
+  }
 
-  // Ejecutar al cargar y tras transiciones de Astro si se usan
-  setupNav();
-  document.addEventListener('astro:after-swap', setupNav);
+  // Lógica de panel desplegable para móviles
+  function setupMobileDrawer() {
+    const toggle = document.getElementById('drawer-toggle');
+    const drawer = document.getElementById('drawer-panel');
+    const backdrop = document.getElementById('drawer-backdrop');
+    if (!toggle || !drawer || !backdrop) return;
+
+    let isOpen = false;
+
+    function openDrawer() {
+      isOpen = true;
+      toggle?.classList.add('is-open');
+      toggle?.setAttribute('aria-expanded', 'true');
+      toggle?.setAttribute('aria-label', 'Cerrar menú de navegación');
+      drawer?.classList.remove('-translate-x-full');
+      drawer?.classList.add('translate-x-0');
+      backdrop?.classList.remove('opacity-0', 'pointer-events-none');
+      backdrop?.classList.add('opacity-100', 'pointer-events-auto');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      isOpen = false;
+      toggle?.classList.remove('is-open');
+      toggle?.setAttribute('aria-expanded', 'false');
+      toggle?.setAttribute('aria-label', 'Abrir menú de navegación');
+      drawer?.classList.add('-translate-x-full');
+      drawer?.classList.remove('translate-x-0');
+      backdrop?.classList.add('opacity-0', 'pointer-events-none');
+      backdrop?.classList.remove('opacity-100', 'pointer-events-auto');
+      document.body.style.overflow = '';
+    }
+
+    toggle.onclick = (e) => {
+      e.stopPropagation();
+      if (isOpen) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
+    };
+
+    backdrop.onclick = () => {
+      if (isOpen) closeDrawer();
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        closeDrawer();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Si se redimensiona a tablet/escritorio (>= 768px), cerrar automáticamente
+    const handleResize = () => {
+      if (window.innerWidth >= 768 && isOpen) {
+        closeDrawer();
+      }
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Cerrar al pulsar cualquier enlace del menú móvil
+    const navLinks = drawer.querySelectorAll('.drawer-nav-link');
+    navLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        closeDrawer();
+      });
+    });
+
+    // Limpieza antes del swap de ClientRouter
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        closeDrawer();
+        window.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('resize', handleResize);
+        if (navObserver) {
+          navObserver.disconnect();
+          navObserver = null;
+        }
+      },
+      { once: true }
+    );
+  }
+
+  function initNav() {
+    setupDesktopNav();
+    setupMobileDrawer();
+  }
+
+  document.addEventListener('astro:page-load', initNav);
 </script>

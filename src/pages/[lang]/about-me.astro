@@ -1,7 +1,9 @@
 ---
+// src/pages/[lang]/about-me.astro
 import { languages } from '@/i18n/ui';
 import { useTranslations } from '@/i18n/utils';
 import MainLayout from '@/layouts/MainLayout.astro';
+import { Image } from 'astro:assets';
 
 export function getStaticPaths() {
   return Object.keys(languages).map((lang) => {
@@ -11,43 +13,154 @@ export function getStaticPaths() {
 
 const { lang } = Astro.params;
 const t = useTranslations(lang);
+const about = t.pages.aboutMe;
 ---
 
-<MainLayout title={t.pages.aboutMe.title} lang={lang as string}>
-    <div class="flex flex-col p-16 animate-in">
-        <h2 class="text-(--primary) text-[4vw] font-light uppercase tracking-tighter mb-12 opacity-70">
-            {t.pages.aboutMe.title}
-        </h2>
+<MainLayout title={about.title} lang={lang as string}>
+    <div class="p-6 pt-24 md:p-16 animate-in">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-x-10 md:gap-y-16 items-start">
+            <!-- Rectángulo 1 (Col 1, Fila 1): Imagen de prueba -->
+            <div class="overflow-hidden flex items-start justify-center">
+                <Image
+                    src="/assets/art_direction/editorial_de_moda/1.webp"
+                    alt={`${about.title} Preview`}
+                    width={800}
+                    height={800}
+                    loading="eager"
+                    class="w-full h-auto object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                />
+            </div>
 
-        <div class="flex flex-col gap-8 mb-24 max-w-2xl">
-            {t.pages.aboutMe.bio.map((paragraph) => (
-                <p class="text-(--primary) text-2xl md:text-3xl font-plain lowercase leading-tight opacity-90">
-                    {paragraph}
-                </p>
-            ))}
-        </div>
+            <!-- Rectángulo 2 (Col 2, Fila 1): Bio / Introducción -->
+            <div class="flex flex-col justify-start gap-6">
+                <h2 class="text-3xl md:text-5xl font-bold uppercase tracking-tighter text-(--primary) leading-none">
+                    {about.greeting}
+                </h2>
+                <div class="flex flex-col gap-4 font-plain text-base md:text-lg leading-relaxed opacity-90 text-(--primary)">
+                    {about.bio.map((paragraph) => (
+                        <p>{paragraph}</p>
+                    ))}
+                </div>
+            </div>
 
-        <div class="experience-section">
-            <h3 class="text-(--primary) text-[2vw] font-bold uppercase tracking-tighter mb-8 border-b border-(--primary)/20 pb-4">
-                Experience
-            </h3>
-
-            <div class="flex flex-col gap-12">
-                {t.pages.aboutMe.experience?.map((item) => (
-                    <div class="experience-item flex flex-col md:flex-row gap-4 md:gap-16">
-                        <span class="text-(--primary) text-xl font-ink opacity-60 min-w-30">
-                            {item.year}
-                        </span>
+            <!-- Rectángulo 3 (Col 1, Fila 2): Experiencia Laboral -->
+            <div class="flex flex-col justify-start gap-6">
+                <h3 class="text-xl md:text-2xl font-bold uppercase tracking-tighter text-(--primary) border-b border-(--primary)/20 pb-2">
+                    {about.experienceTitle}
+                </h3>
+                <div class="flex flex-col gap-6">
+                    {about.experience.map((job) => (
                         <div class="flex flex-col gap-2">
-                            <h4 class="text-(--primary) text-2xl font-bold uppercase tracking-tighter">
-                                {item.title}
-                            </h4>
-                            <p class="text-(--primary) text-lg font-plain lowercase opacity-70 max-w-lg">
-                                {item.description}
-                            </p>
+                            <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                                <h4 class="text-base md:text-lg font-bold uppercase tracking-tighter text-(--primary)">
+                                    {job.role} · {job.company}
+                                </h4>
+                                <span class="text-sm font-plain opacity-60 text-(--primary)">{job.period}</span>
+                            </div>
+                            {job.companySubtitle && (
+                                <p class="font-plain text-xs opacity-60 text-(--primary) -mt-1">
+                                    {job.companySubtitle}
+                                </p>
+                            )}
+                            <ul class="list-none p-0 m-0 flex flex-col gap-1 font-plain text-sm md:text-base leading-relaxed opacity-85 text-(--primary)">
+                                {job.tasks.map((task) => (
+                                    <li>{task}</li>
+                                ))}
+                            </ul>
                         </div>
+                    ))}
+                </div>
+            </div>
+
+            <!-- Rectángulo 4 (Col 2, Fila 2): Formación, Premios y Publicaciones -->
+            <div class="flex flex-col justify-start gap-6">
+                <div class="flex flex-col gap-4">
+                    <h3 class="text-xl md:text-2xl font-bold uppercase tracking-tighter text-(--primary) border-b border-(--primary)/20 pb-2">
+                        {about.educationTitle}
+                    </h3>
+                    <div class="flex flex-col gap-3">
+                        {about.education.map((edu) => (
+                            <div class="flex flex-col gap-0.5">
+                                <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                                    <h4 class="text-base md:text-lg font-bold uppercase tracking-tighter text-(--primary)">
+                                        {edu.degree}
+                                    </h4>
+                                    <span class="text-sm font-plain opacity-60 text-(--primary)">{edu.period}</span>
+                                </div>
+                                <p class="font-plain text-sm opacity-75 text-(--primary)">
+                                    {edu.institution}
+                                </p>
+                            </div>
+                        ))}
                     </div>
-                ))}
+                </div>
+
+                <div class="flex flex-col gap-4 pt-2">
+                    <h3 class="text-xl md:text-2xl font-bold uppercase tracking-tighter text-(--primary) border-b border-(--primary)/20 pb-2">
+                        {about.awardsTitle}
+                    </h3>
+                    <div class="flex flex-col gap-3">
+                        {about.awards.map((award) => (
+                            <div class="flex flex-col gap-1">
+                                <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                                    <h4 class="text-base md:text-lg font-bold uppercase tracking-tighter text-(--primary)">
+                                        {award.title}
+                                    </h4>
+                                    <span class="text-sm font-plain opacity-60 text-(--primary)">{award.year}</span>
+                                </div>
+                                {award.category && (
+                                    <p class="font-plain text-xs opacity-60 text-(--primary)">{award.category}</p>
+                                )}
+                                <p class="font-plain text-sm leading-relaxed opacity-85 text-(--primary)">
+                                    {award.description}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rectángulo 5 (Col 1, Fila 3): Habilidades -->
+            <div class="flex flex-col justify-start gap-6">
+                <h3 class="text-xl md:text-2xl font-bold uppercase tracking-tighter text-(--primary) border-b border-(--primary)/20 pb-2">
+                    {about.skillsTitle}
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {about.skills.map((group) => (
+                        <div class="flex flex-col gap-3">
+                            <h4 class="text-sm font-bold uppercase tracking-wider opacity-70 text-(--primary)">
+                                {group.title}
+                            </h4>
+                            <ul class="list-none p-0 m-0 flex flex-col gap-1.5 font-plain text-sm md:text-base opacity-85 text-(--primary)">
+                                {group.items.map((item) => (
+                                    <li>{item}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <!-- Rectángulo 6 (Col 2, Fila 3): Proyectos Personales -->
+            <div class="flex flex-col justify-start gap-6">
+                <div class="flex items-baseline justify-between border-b border-(--primary)/20 pb-2">
+                    <h3 class="text-xl md:text-2xl font-bold uppercase tracking-tighter text-(--primary)">
+                        {about.personalProjects.title}
+                    </h3>
+                    <a
+                        href="https://www.behance.net/deboramilenova"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-sm font-bold uppercase tracking-wider text-(--primary) opacity-80 hover:opacity-100 transition-opacity underline underline-offset-4"
+                    >
+                        {about.personalProjects.linkText}
+                    </a>
+                </div>
+                <ul class="list-none p-0 m-0 flex flex-col gap-2 font-plain text-base md:text-lg leading-relaxed opacity-85 text-(--primary)">
+                    {about.personalProjects.items.map((item) => (
+                        <li>{item}</li>
+                    ))}
+                </ul>
             </div>
         </div>
     </div>
