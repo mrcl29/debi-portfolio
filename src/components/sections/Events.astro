@@ -1,0 +1,95 @@
+---
+// src/components/sections/Events.astro
+import { Image } from 'astro:assets';
+import { getLangFromUrl, useTranslations } from '@/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const eventSection = t.pages.projects.sections.find((s) => s.id === 'events');
+const description = (Array.isArray(eventSection?.description) ? eventSection.description : []) as string[];
+
+const image1 = {
+  src: '/assets/projects/events/cual_es_tu_huella_1.webp',
+  alt: '¿Cuál es tu huella? - 1',
+  width: 1208,
+  height: 852,
+};
+
+const image2 = {
+  src: '/assets/projects/events/cual_es_tu_huella_2.webp',
+  alt: '¿Cuál es tu huella? - 2',
+  width: 600,
+  height: 800,
+};
+
+const remainingImages = [
+  {
+    src: '/assets/projects/events/cual_es_tu_huella_3.webp',
+    alt: '¿Cuál es tu huella? - 3',
+    width: 600,
+    height: 800,
+  },
+  {
+    src: '/assets/projects/events/cual_es_tu_huella_4.webp',
+    alt: '¿Cuál es tu huella? - 4',
+    width: 600,
+    height: 800,
+  },
+  {
+    src: '/assets/projects/events/cual_es_tu_huella_5.webp',
+    alt: '¿Cuál es tu huella? - 5',
+    width: 4284,
+    height: 5712,
+  },
+];
+---
+
+<div class="events-container flex flex-col gap-4 md:gap-6 w-full mt-4">
+  <!-- Fila 1: Imagen inicial completa -->
+  <div class="events-row w-full overflow-hidden leading-none rounded-[1.25rem] md:rounded-[1.75rem]">
+    <Image
+      src={image1.src}
+      alt={image1.alt}
+      width={image1.width}
+      height={image1.height}
+      loading="eager"
+      class="events-image w-full h-auto block object-cover rounded-[1.25rem] md:rounded-[1.75rem]"
+    />
+  </div>
+
+  <!-- Fila 2: Dos columnas (imagen a la izquierda, texto descriptivo a la derecha) -->
+  <div class="events-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[50%_1fr] gap-4 md:gap-6 lg:gap-8 items-start w-full">
+    <div class="events-media w-full overflow-hidden leading-none rounded-[1.25rem] md:rounded-[1.75rem]">
+      <Image
+        src={image2.src}
+        alt={image2.alt}
+        width={image2.width}
+        height={image2.height}
+        loading="eager"
+        class="events-image w-full h-auto block object-cover rounded-[1.25rem] md:rounded-[1.75rem]"
+      />
+    </div>
+
+    <div class="events-text flex flex-col gap-4 justify-start font-plain text-sm md:text-sm lg:text-base leading-relaxed text-(--primary) opacity-90 pt-1 md:pt-2">
+      {description.map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+    </div>
+  </div>
+
+  <!-- Filas restantes: imágenes individuales de ancho completo -->
+  {
+    remainingImages.map((img) => (
+      <div class="events-row w-full overflow-hidden leading-none rounded-[1.25rem] md:rounded-[1.75rem]">
+        <Image
+          src={img.src}
+          alt={img.alt}
+          width={img.width}
+          height={img.height}
+          loading="lazy"
+          class="events-image w-full h-auto block object-cover rounded-[1.25rem] md:rounded-[1.75rem]"
+        />
+      </div>
+    ))
+  }
+</div>

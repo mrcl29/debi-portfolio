@@ -2,6 +2,7 @@
 import { fullOwnerName } from "@/constants/constants";
 import type langDict from "./types/langDict";
 import Branding from "@/components/sections/Branding.astro";
+import Events from "@/components/sections/Events.astro";
 
 export const languages = {
     es: 'Español',
@@ -24,7 +25,16 @@ export const ui: Record<keyof typeof languages, langDict> = {
                 title: 'Proyectos',
                 sections: [
                     { id: 'branding', title: "MARCA", component: Branding },
-                    { id: 'events', title: "EVENTOS", component: Branding  },
+                    {
+                        id: 'events',
+                        title: "EVENTOS",
+                        component: Events,
+                        description: [
+                            "Diseño y desarrollo de la comunicación visual de la III edición de ¿Cuál es tu huella? Iniciativas y empresas que aportan valor, un encuentro impulsado para dar visibilidad a proyectos, profesionales y empresas que generan un impacto positivo en la sociedad.",
+                            "Se creó una identidad accesible para todas las personas y capaz de transmitir los valores del evento: inspiración, compromiso, innovación y contribución social.",
+                            "Se aplicó el diseño en diferentes formatos, tanto digitales como físicos."
+                        ]
+                    },
                     { id: 'editorial', title: "EDITORIAL", component: Branding  },
                     { id: 'art-direction', title: "D. DE ARTE", component: Branding  }
                 ]
@@ -185,7 +195,16 @@ export const ui: Record<keyof typeof languages, langDict> = {
                 title: 'Projects',
                 sections: [
                     { id: 'branding', title: "BRANDING", component: Branding },
-                    { id: 'events', title: "EVENTS", component: Branding  },
+                    {
+                        id: 'events',
+                        title: "EVENTS",
+                        component: Events,
+                        description: [
+                            "Design and development of the visual communication for the 3rd edition of ¿Cuál es tu huella? Initiatives and companies that add value, a gathering fostered to give visibility to projects, professionals, and companies generating a positive impact on society.",
+                            "An identity accessible to everyone was created, capable of conveying the event's values: inspiration, commitment, innovation, and social contribution.",
+                            "The design was applied across various formats, both digital and physical."
+                        ]
+                    },
                     { id: 'editorial', title: "EDITORIAL", component: Branding  },
                     { id: 'art-direction', title: "ART DIR.", component: Branding  }
                 ]
@@ -346,7 +365,16 @@ export const ui: Record<keyof typeof languages, langDict> = {
                 title: 'Projectes',
                 sections: [
                     { id: 'branding', title: "MARCA", component: Branding },
-                    { id: 'events', title: "EVENTS", component: Branding  },
+                    {
+                        id: 'events',
+                        title: "EVENTS",
+                        component: Events,
+                        description: [
+                            "Disseny i desenvolupament de la comunicació visual de la III edició de ¿Cuál es tu huella? Iniciatives i empreses que aporten valor, una trobada impulsada per donar visibilitat a projectes, professionals i empreses que generen un impacte positiu en la societat.",
+                            "Es va crear una identitat accessible per a tothom i capaç de transmetre els valors de l'esdeveniment: inspiració, compromís, innovació i contribució social.",
+                            "Es va aplicar el disseny en diferents formats, tant digitals com físics."
+                        ]
+                    },
                     { id: 'editorial', title: "EDITORIAL", component: Branding  },
                     { id: 'art-direction', title: "D. D'ART", component: Branding  }
                 ]

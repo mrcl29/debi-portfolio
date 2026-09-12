@@ -3,7 +3,7 @@
 export interface Section {
   id: string;
   title: string;
-  description?: string;
+  description?: string | string[];
   component?: any;
 }
 
