@@ -1,173 +1,470 @@
 ---
 // src/components/SectionNavBar.astro
-import type { Section } from '@/i18n/types/langDict';
+import type { Section } from "@/i18n/types/langDict";
 
 interface Props {
-  sections: Section[];
+    sections: Section[];
 }
 
 const { sections } = Astro.props as Props;
 ---
 
-<nav class="section-nav-container relative z-40 p-6 pt-24 md:p-8 lg:p-10 flex flex-col min-h-screen bg-transparent animate-in">
-  <div class="spacer grow shrink-0"></div>
-  <ul class="flex flex-col list-none m-0 p-0 gap-1 md:gap-2">
-    {
-      sections?.map((section) => {
-        const SectionComponent = section.component;
-        return (
-          <li class="section-item group opacity-0 flex flex-col m-0 p-0" data-id={section.id}>
-            <div class="flex items-center m-0 p-0">
-              <button 
-                type="button"
-                class="section-title w-full text-left text-(--primary) text-3xl sm:text-4xl md:text-[4.8vw] lg:text-[5vw] xl:text-[5.3vw] font-light leading-none uppercase whitespace-nowrap tracking-tighter hover:font-extrabold transition-all duration-300 cursor-pointer appearance-none bg-transparent border-none p-0 m-0 h-[1.15em] flex items-center"
-                data-text={section.title}
-              >
-                {section.title}
-              </button>
-            </div>
-            <div class="section-content max-h-0 opacity-0 overflow-hidden transition-all duration-500 ease-in-out">
-              <div class="py-8">
-                {SectionComponent && <SectionComponent />}
-              </div>
-            </div>
-          </li>
-        )
-      })
-    }
-  </ul>
+<nav
+    class="section-nav-container relative z-40 p-6 pt-24 md:p-8 lg:p-10 flex flex-col min-h-screen bg-transparent animate-in"
+>
+    <div class="spacer grow shrink-0"></div>
+    <ul class="flex flex-col list-none m-0 p-0 gap-1 md:gap-2 w-full relative">
+        {
+            sections?.map((section) => {
+                const SectionComponent = section.component;
+                return (
+                    <li
+                        class="section-item group flex flex-col m-0 p-0 w-full"
+                        data-id={section.id}
+                    >
+                        <div class="section-sticky-header">
+                            <div class="section-title-wrapper flex items-center justify-end m-0 p-0 w-full">
+                                <button
+                                    type="button"
+                                    class="section-title items-center justify-cente text-(--primary) text-3xl sm:text-4xl md:text-[4.8vw] lg:text-[5vw] xl:text-[5.3vw] font-light leading-none uppercase whitespace-nowrap tracking-tighter hover:font-extrabold transition-colors duration-300 cursor-pointer appearance-none bg-transparent border-none p-0 m-0 h-[1.15em] inline-flex"
+                                >
+                                    {section.title}
+                                </button>
+                                <button
+                                    type="button"
+                                    class="section-close-btn items-center justify-center cursor-pointer appearance-none bg-transparent rounded-full text-(--primary) group pr-10"
+                                    aria-label="Volver a secciones"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.75"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 transition-all duration-300 hover:scale-150 active:scale-90"
+                                    >
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <polyline points="19 12 12 19 5 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div
+                                class="section-fade-gradient"
+                                aria-hidden="true"
+                            />
+                        </div>
+                        <div class="section-content max-h-0 opacity-0 overflow-hidden w-full">
+                            <div class="pt-2 pb-20 md:pt-3 md:pb-24 text-left w-full">
+                                {SectionComponent && <SectionComponent />}
+                            </div>
+                        </div>
+                    </li>
+                );
+            })
+        }
+    </ul>
 </nav>
 
 <script>
-  function initSections() {
-    const nav = document.querySelector('.section-nav-container') as HTMLElement | null;
-    const spacer = nav?.querySelector('.spacer') as HTMLElement | null;
-    const items = document.querySelectorAll('.section-item') as NodeListOf<HTMLElement>;
+    import { gsap } from "gsap";
+    import { Flip } from "gsap/Flip";
 
-    if (!nav || !spacer || items.length === 0) return;
+    gsap.registerPlugin(Flip);
 
-    function fixSpacer() {
-      if (!spacer || !nav) return;
+    function initSections() {
+        const nav = document.querySelector(
+            ".section-nav-container",
+        ) as HTMLElement | null;
+        const spacer = nav?.querySelector(".spacer") as HTMLElement | null;
+        const items = document.querySelectorAll(
+            ".section-item",
+        ) as NodeListOf<HTMLElement>;
 
-      const navHeight = window.innerHeight;
-      const navStyle = window.getComputedStyle(nav);
-      const paddingTop = parseFloat(navStyle.paddingTop) || 0;
-      const paddingBottom = parseFloat(navStyle.paddingBottom) || 0;
+        if (!nav || !spacer || items.length === 0) return;
 
-      const listItems = Array.from(items);
-      let totalClosedItemsHeight = 0;
-      listItems.forEach(item => {
-        const btn = item.querySelector('.section-title') as HTMLElement;
-        if (btn) {
-          totalClosedItemsHeight += btn.offsetHeight;
-        }
-      });
+        const main = nav.closest("main") || document.querySelector("main");
+        let isAnimating = false;
 
-      const ul = nav.querySelector('ul') as HTMLElement;
-      const gap = ul ? parseFloat(window.getComputedStyle(ul).gap) || 0 : 0;
-      totalClosedItemsHeight += gap * Math.max(0, listItems.length - 1);
+        function fixSpacer() {
+            if (!spacer || !nav) return;
+            if (nav.classList.contains("has-active-section")) return;
 
-      const availableHeight = navHeight - paddingTop - paddingBottom;
-      const targetHeight = Math.max(0, availableHeight - totalClosedItemsHeight);
+            const firstNavItem = document.querySelector(
+                "#nav-list li a",
+            ) as HTMLElement | null;
+            const navStyle = window.getComputedStyle(nav);
+            const paddingTop = parseFloat(navStyle.paddingTop) || 0;
+            const paddingBottom = parseFloat(navStyle.paddingBottom) || 0;
 
-      spacer.style.flexGrow = '0';
-      spacer.style.flexShrink = '0';
-      spacer.style.flexBasis = `${targetHeight}px`;
-      spacer.style.height = `${targetHeight}px`;
-    }
+            // En desktop (>= 768px), alinear el primer título de sección (MARCA) a la misma altura exacta que PROYECTOS
+            if (window.innerWidth >= 768 && firstNavItem) {
+                const firstNavRect = firstNavItem.getBoundingClientRect();
+                const navRect = nav.getBoundingClientRect();
+                const targetHeight = Math.max(
+                    0,
+                    firstNavRect.top - (navRect.top + paddingTop),
+                );
 
-    // --- Typewriter Logic ---
-    const typeTitle = async (titleElement: HTMLElement) => {
-      const fullText = titleElement.getAttribute('data-text');
-      if (!fullText) return;
-      titleElement.textContent = '';
-      for (let i = 0; i < fullText.length; i++) {
-        titleElement.textContent += fullText.charAt(i);
-        await new Promise(r => setTimeout(r, 40));
-      }
-    };
-
-    const runTypewriterSequence = async () => {
-      for (const item of items) {
-        item.classList.remove('opacity-0');
-        const titleElement = item.querySelector('.section-title') as HTMLElement;
-        if (titleElement) {
-          await typeTitle(titleElement);
-          await new Promise(r => setTimeout(r, 80));
-        }
-      }
-    };
-
-    fixSpacer();
-    runTypewriterSequence();
-
-    if (document.fonts) {
-      document.fonts.ready.then(fixSpacer);
-    }
-
-    window.removeEventListener('resize', fixSpacer);
-    window.addEventListener('resize', fixSpacer);
-
-    document.addEventListener(
-      'astro:before-swap',
-      () => {
-        window.removeEventListener('resize', fixSpacer);
-      },
-      { once: true }
-    );
-
-    items.forEach(item => {
-      const title = item.querySelector('.section-title') as HTMLElement;
-      const content = item.querySelector('.section-content') as HTMLElement;
-
-      if (title && content) {
-        title.onclick = (e) => {
-          e.preventDefault();
-          const isOpen = !content.classList.contains('max-h-0');
-
-          // Cerrar otros
-          items.forEach(otherItem => {
-            if (otherItem !== item) {
-              const otherTitle = otherItem.querySelector('.section-title') as HTMLElement;
-              const otherContent = otherItem.querySelector('.section-content') as HTMLElement;
-              otherContent.classList.add('max-h-0', 'opacity-0');
-              otherContent.style.maxHeight = '0px';
-              otherTitle?.classList.remove('font-extrabold');
+                spacer.style.display = "block";
+                spacer.style.flexGrow = "0";
+                spacer.style.flexShrink = "0";
+                spacer.style.flexBasis = `${targetHeight}px`;
+                spacer.style.height = `${targetHeight}px`;
+                return;
             }
-          });
 
-          if (!isOpen) {
-            // Abrir actual
-            content.classList.remove('max-h-0', 'opacity-0');
-            content.style.maxHeight = content.scrollHeight + 'px';
-            title.classList.add('font-extrabold');
-          } else {
-            // Cerrar actual
-            content.classList.add('max-h-0', 'opacity-0');
-            content.style.maxHeight = '0px';
-            title.classList.remove('font-extrabold');
-          }
-        };
-      }
-    });
-  }
+            // En móviles (< 768px), cálculo original hacia abajo
+            const navHeight = window.innerHeight;
+            const listItems = Array.from(items).filter(
+                (item) => !item.classList.contains("is-hidden"),
+            );
+            let totalClosedItemsHeight = 0;
+            listItems.forEach((item) => {
+                const btn = item.querySelector(".section-title") as HTMLElement;
+                if (btn) {
+                    totalClosedItemsHeight += btn.offsetHeight;
+                }
+            });
 
-  document.addEventListener('astro:page-load', initSections);
+            const ul = nav.querySelector("ul") as HTMLElement;
+            const gap = ul
+                ? parseFloat(window.getComputedStyle(ul).gap) || 0
+                : 0;
+            totalClosedItemsHeight += gap * Math.max(0, listItems.length - 1);
+
+            const availableHeight = navHeight - paddingTop - paddingBottom;
+            const targetHeight = Math.max(
+                0,
+                availableHeight - totalClosedItemsHeight,
+            );
+
+            spacer.style.display = "block";
+            spacer.style.flexGrow = "0";
+            spacer.style.flexShrink = "0";
+            spacer.style.flexBasis = `${targetHeight}px`;
+            spacer.style.height = `${targetHeight}px`;
+        }
+
+        fixSpacer();
+        requestAnimationFrame(fixSpacer);
+
+        if (document.fonts) {
+            document.fonts.ready.then(fixSpacer);
+        }
+
+        nav.addEventListener(
+            "animationend",
+            () => {
+                nav.style.animation = "none";
+                nav.style.transform = "none";
+            },
+            { once: true },
+        );
+
+        window.removeEventListener("resize", fixSpacer);
+        window.addEventListener("resize", fixSpacer);
+
+        document.addEventListener(
+            "astro:before-swap",
+            () => {
+                window.removeEventListener("resize", fixSpacer);
+                gsap.killTweensOf("*");
+            },
+            { once: true },
+        );
+
+        items.forEach((item) => {
+            const title = item.querySelector(".section-title") as HTMLElement;
+            const content = item.querySelector(
+                ".section-content",
+            ) as HTMLElement;
+            const closeBtn = item.querySelector(
+                ".section-close-btn",
+            ) as HTMLElement;
+            const gradient = item.querySelector(
+                ".section-fade-gradient",
+            ) as HTMLElement;
+
+            const closeActiveSection = () => {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                // 1. Grabar estado actual del título (superior izquierda) ANTES de modificar el DOM
+                const state = Flip.getState(title);
+
+                // 2. Ocultar inmediatamente contenido y degradado
+                if (gradient) gsap.set(gradient, { opacity: 0 });
+                if (closeBtn) gsap.set(closeBtn, { clearProps: "all" });
+                content.classList.add("max-h-0", "opacity-0");
+                gsap.set(content, { clearProps: "all" });
+
+                // 3. Restaurar DOM al estado original
+                const otherItems = Array.from(items).filter(
+                    (oi) => oi !== item,
+                );
+                nav.classList.remove("has-active-section");
+                spacer.classList.remove("is-collapsed");
+                item.classList.remove("is-active");
+                title.classList.remove("font-extrabold");
+
+                otherItems.forEach((oi) => {
+                    oi.classList.remove("is-hidden");
+                });
+
+                if (main) {
+                    main.scrollTop = 0;
+                }
+
+                fixSpacer();
+
+                // 4. Animar el título de vuelta a la derecha hacia su posición original
+                Flip.from(state, {
+                    duration: 0.55,
+                    ease: "power3.inOut",
+                    onComplete: () => {
+                        gsap.set(title, { clearProps: "transform" });
+                        isAnimating = false;
+                    },
+                });
+            };
+
+            const openSection = () => {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                const otherItems = Array.from(items).filter(
+                    (oi) => oi !== item,
+                );
+
+                // 1. Grabar estado inicial del título para GSAP Flip (estando a la derecha y cerrado)
+                const state = Flip.getState(title);
+
+                // 2. Ocultar inmediatamente el resto de secciones
+                otherItems.forEach((oi) => {
+                    oi.classList.add("is-hidden");
+                });
+
+                // 3. Activar sección seleccionada en el DOM
+                nav.classList.add("has-active-section");
+                spacer.classList.add("is-collapsed");
+                spacer.style.height = "0px";
+                spacer.style.flexBasis = "0px";
+
+                item.classList.remove("is-hidden");
+                item.classList.add("is-active");
+                title.classList.add("font-extrabold");
+
+                if (main) {
+                    main.scrollTop = 0;
+                }
+
+                // 4. Animar el título fluidamente hacia la parte superior izquierda
+                Flip.from(state, {
+                    duration: 0.65,
+                    ease: "power3.out",
+                    onComplete: () => {
+                        gsap.set(title, { clearProps: "transform" });
+                    },
+                });
+
+                // 5. El degradado aparece suavemente cuando el título ya superó la zona de vuelo
+                if (gradient) {
+                    gsap.fromTo(
+                        gradient,
+                        { opacity: 0 },
+                        {
+                            opacity: 1,
+                            duration: 0.35,
+                            delay: 0.4,
+                            ease: "power2.out",
+                        },
+                    );
+                }
+
+                // 6. Animación de aparición suave para el botón de retorno
+                if (closeBtn) {
+                    gsap.fromTo(
+                        closeBtn,
+                        { opacity: 0, scale: 0.8 },
+                        {
+                            opacity: 1,
+                            scale: 1,
+                            duration: 0.45,
+                            ease: "power3.out",
+                            delay: 0.35,
+                        },
+                    );
+                }
+
+                // 7. Aparición suave y de calidad del contenido
+                content.classList.remove("max-h-0", "opacity-0");
+                gsap.fromTo(
+                    content,
+                    { opacity: 0, y: 24 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.55,
+                        ease: "power3.out",
+                        delay: 0.2,
+                        onComplete: () => {
+                            gsap.set(content, { clearProps: "transform" });
+                            isAnimating = false;
+                        },
+                    },
+                );
+            };
+
+            if (closeBtn) {
+                closeBtn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeActiveSection();
+                };
+            }
+
+            if (title && content) {
+                title.onclick = (e) => {
+                    e.preventDefault();
+                    const isCurrentlyActive =
+                        item.classList.contains("is-active");
+                    if (isCurrentlyActive) {
+                        closeActiveSection();
+                    } else {
+                        openSection();
+                    }
+                };
+            }
+        });
+    }
+
+    document.addEventListener("astro:page-load", initSections);
 </script>
 
 <style>
-  .animate-in {
-    animation: fadeInSlide 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  }
+    .animate-in {
+        animation: fadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
 
-  @keyframes fadeInSlide {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+
+    .section-nav-container.has-active-section {
+        padding-top: 0 !important;
+        animation: none !important;
+        transform: none !important;
     }
-  }
+
+    .spacer.is-collapsed {
+        height: 0 !important;
+        flex-basis: 0 !important;
+        flex-grow: 0 !important;
+        display: none !important;
+    }
+
+    .section-item.is-hidden {
+        display: none !important;
+    }
+
+    .section-sticky-header {
+        position: relative;
+        width: 100%;
+        background: transparent;
+    }
+
+    .section-title-wrapper {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        width: 100%;
+    }
+
+    .section-close-btn {
+        display: none;
+        opacity: 0;
+    }
+
+    .section-fade-gradient {
+        display: none;
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    /* Estado ACTIVO para la sección seleccionada:
+     - Título a la IZQUIERDA en negrita fija permanente (sin hover)
+     - Botón de retorno a la DERECHA
+     - Pegado al borde superior (padding-top: 0.75rem)
+     - Contenedor compacto
+     - Exactamente el mismo ancho que el contenido */
+    .section-item.is-active .section-sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        background-color: var(--background);
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .section-item.is-active .section-title-wrapper {
+        display: flex;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+
+    .section-item.is-active .section-title {
+        font-weight: 800 !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
+        height: 1.15em !important;
+        line-height: 1 !important;
+        padding-top: 0.12em !important;
+    }
+
+    .section-item.is-active .section-close-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+    }
+
+    .section-item.is-active .section-fade-gradient {
+        display: block;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 2.25rem;
+        z-index: 1;
+        background: linear-gradient(
+            to bottom,
+            var(--background) 0%,
+            color-mix(in srgb, var(--background) 80%, transparent) 35%,
+            color-mix(in srgb, var(--background) 30%, transparent) 70%,
+            transparent 100%
+        );
+        pointer-events: none;
+    }
+
+    .section-item.is-active .section-content {
+        max-height: none !important;
+        overflow: visible !important;
+    }
 </style>
