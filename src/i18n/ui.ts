@@ -156,6 +156,14 @@ export const ui: Record<keyof typeof languages, langDict> = {
                     { url: 'https://picsum.photos/id/18/1000/800', caption: 'Editorial' }
                 ]
             },
+            lastProject: {
+                title: 'Último Proyecto',
+                description: [
+                    'Desarrollo de una editorial de moda inspirada en la identidad de la revista Herdes y en la transformación social y cultural de la España de los años 80, construyendo una narrativa visual con los Pirineos como escenario principal.',
+                    'Se creó el concepto "La montaña no cambió. Cambiaron los ojos que la miraban", explorando dos formas de relacionarse con el territorio: quien lo habita y quien lo descubre.',
+                    'Esta dualidad definió la dirección artística, el estilismo y la narrativa fotográfica.'
+                ]
+            },
         },
         nav: {
             projects: 'PROYECTOS',
@@ -309,6 +317,14 @@ export const ui: Record<keyof typeof languages, langDict> = {
                     { url: 'https://picsum.photos/id/18/1000/800', caption: 'Editorial' }
                 ]
             },
+            lastProject: {
+                title: 'Last Project',
+                description: [
+                    'Development of a fashion editorial inspired by the identity of Herdes magazine and the social and cultural transformation of 1980s Spain, building a visual narrative with the Pyrenees as the main setting.',
+                    'The concept "The mountain did not change. The eyes looking at it did" was created, exploring two ways of relating to the land: the one who inhabits it and the one who discovers it.',
+                    'This duality shaped the art direction, styling, and photographic narrative.'
+                ]
+            },
         },
         nav: {
             projects: 'PROJECTS',
@@ -460,6 +476,14 @@ export const ui: Record<keyof typeof languages, langDict> = {
                     { url: 'https://picsum.photos/id/16/800/800', caption: 'Branding' },
                     { url: 'https://picsum.photos/id/17/800/1000', caption: 'Illustration' },
                     { url: 'https://picsum.photos/id/18/1000/800', caption: 'Editorial' }
+                ]
+            },
+            lastProject: {
+                title: 'Últim Projecte',
+                description: [
+                    'Desenvolupament d\'una editorial de moda inspirada en la identitat de la revista Herdes i en la transformació social i cultural de l\'Espanya dels anys 80, construint una narrativa visual amb els Pirineus com a escenari principal.',
+                    'Es va crear el concepte "La muntanya no va canviar. Van canviar els ulls que la miraven", explorant dues maneres de relacionar-se amb el territori: qui l\'habita i qui el descobreix.',
+                    'Aquesta dualitat va definir la direcció artística, l\'estilisme i la narrativa fotogràfica.'
                 ]
             },
         },

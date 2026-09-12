@@ -1,0 +1,142 @@
+---
+// src/pages/[lang]/last-project.astro
+import { languages } from '@/i18n/ui';
+import { useTranslations } from '@/i18n/utils';
+import MainLayout from '@/layouts/MainLayout.astro';
+import { Image } from 'astro:assets';
+
+export function getStaticPaths() {
+  return Object.keys(languages).map((lang) => {
+    return { params: { lang } };
+  });
+}
+
+const { lang } = Astro.params;
+const t = useTranslations(lang);
+const project = t.pages.lastProject;
+
+const galleryImages = [
+  '/assets/last_project/the_pyrenees_issue_1.jpg',
+  '/assets/last_project/the_pyrenees_issue_2.jpg',
+  '/assets/last_project/the_pyrenees_issue_3.jpg',
+  '/assets/last_project/the_pyrenees_issue_4.jpg',
+  '/assets/last_project/the_pyrenees_issue_5.jpg',
+];
+---
+
+<MainLayout title={project.title} lang={lang as string}>
+  <div class="p-6 pt-24 md:p-16 pb-24 md:pb-32 animate-in">
+    <div class="project-container w-full">
+      <!-- Fila inicial con dos columnas: 65% fotografía a la izquierda, 35% texto a la derecha -->
+      <div class="last-project-grid w-full">
+        <div class="project-media">
+          <Image
+            src="/assets/last_project/the_pyrenees_issue_front_page.png"
+            alt="The Pyrenees Issue - Front Page"
+            width={1444}
+            height={816}
+            loading="eager"
+            class="project-image"
+          />
+        </div>
+
+        <div class="project-text font-plain text-sm md:text-sm lg:text-base leading-relaxed text-(--primary) opacity-90">
+          {project.description.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
+        </div>
+      </div>
+
+      <!-- Resto de la página: una sola columna donde cada fila es una sola fotografía sin espacio entre filas -->
+      {galleryImages.map((src, index) => (
+        <div class="gallery-row">
+          <Image
+            src={src}
+            alt={`The Pyrenees Issue - Image ${index + 1}`}
+            width={8000}
+            height={4500}
+            loading={index < 2 ? "eager" : "lazy"}
+            class="project-image"
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+</MainLayout>
+
+<style>
+  .project-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+  }
+
+  .last-project-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    width: 100%;
+    padding-bottom: 3%;
+  }
+
+  @media (min-width: 768px) {
+    .last-project-grid {
+      grid-template-columns: 65% 1fr;
+      gap: 2rem;
+    }
+  }
+
+  .project-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: flex-start;
+    padding-top: 2%;
+  }
+
+  .project-media,
+  .gallery-row {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 1.25rem;
+    line-height: 0;
+  }
+
+  @media (min-width: 768px) {
+    .project-media,
+    .gallery-row {
+      border-radius: 1.75rem;
+    }
+  }
+
+  .project-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    border-radius: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .project-image {
+      border-radius: 1.75rem;
+    }
+  }
+
+  .animate-in {
+    animation: fadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

@@ -20,11 +20,11 @@ const languageLabels: Record<Lang, string> = {
 };
 ---
 
-<div class="lang-picker-container relative inline-block text-left font-plain">
+<div class="lang-picker-container relative inline-block text-right font-plain">
   <button
     aria-label="Cambiar idioma"
     aria-expanded="false"
-    class="lang-menu-button bg-transparent border-none cursor-pointer p-0 transition-opacity duration-200 ease-in-out hover:opacity-70 text-(--primary) text-sm font-bold tracking-widest"
+    class="lang-menu-button bg-transparent border-none cursor-pointer px-2 py-0.5 transition-opacity duration-200 ease-in-out hover:opacity-70 text-(--primary) text-sm font-bold tracking-widest"
   >
     {languageLabels[currentLang]}
   </button>

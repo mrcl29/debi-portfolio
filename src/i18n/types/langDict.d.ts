@@ -84,6 +84,10 @@ export interface InspoContent extends PageContent {
   }[];
 }
 
+export interface LastProjectContent extends PageContent {
+  description: string[];
+}
+
 /**
  * Define aquí todas las páginas del sitio.
  * Esto permite centralizar la estructura y derivar otros tipos automáticamente.
@@ -94,13 +98,14 @@ export interface PageMap {
   aboutMe: AboutMeContent;
   contact: ContactContent;
   inspo: InspoContent;
+  lastProject: LastProjectContent;
 }
 
 /**
  * Las claves de navegación suelen ser un subconjunto de las páginas.
  * Excluimos 'index' ya que suele ser el logo/home link en el header.
  */
-export type NavKey = Exclude<keyof PageMap, 'index'> | 'lastProject';
+export type NavKey = Exclude<keyof PageMap, 'index'>;
 
 export default interface LangDict {
   intro: {

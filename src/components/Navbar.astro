@@ -14,17 +14,13 @@ const routes: Record<keyof typeof t.nav, string> = {
   aboutMe: `/${lang}/about-me`,
   contact: `/${lang}/contact`,
   inspo: `/${lang}/inspo`,
-  lastProject: `/${lang}#last-project`,
+  lastProject: `/${lang}/last-project`,
 };
 
 const { pathname } = Astro.url;
-const isIndex = pathname.replace(/\/$/, '') === `/${lang}` || pathname === '/';
 const currentPath = pathname.replace(/\/$/, '') || `/${lang}`;
 
-// Entradas fijas para la navegación estándar (4 ítems base)
-const standardNavEntries = Object.entries(t.nav).filter(([key]) => key !== 'lastProject');
-const lastProjectEntry = Object.entries(t.nav).find(([key]) => key === 'lastProject');
-const navEntries = Object.entries(t.nav).filter(([key]) => isIndex || key !== 'lastProject');
+const navEntries = Object.entries(t.nav);
 ---
 
 <!-- ========================================== -->
@@ -70,7 +66,7 @@ const navEntries = Object.entries(t.nav).filter(([key]) => isIndex || key !== 'l
       </a>
     </div>
 
-    <div class="flex items-center gap-4">
+    <div class="flex flex-col items-end gap-1">
       <ThemeToggle />
       <LanguagePicker />
     </div>
@@ -84,13 +80,13 @@ const navEntries = Object.entries(t.nav).filter(([key]) => isIndex || key !== 'l
           const routeKey = key as keyof typeof t.nav;
           const href = routes[routeKey];
           const normalizedHref = href.split('#')[0].replace(/\/$/, '');
-          const isActive = normalizedHref === currentPath && key !== 'lastProject';
+          const isActive = normalizedHref === currentPath;
 
           return (
             <li>
               <a
                 href={href}
-                class={`drawer-nav-link text-(--primary) text-3xl sm:text-4xl leading-none no-underline transition-all duration-300 hover:font-extrabold uppercase block tracking-tighter ${
+                class={`drawer-nav-link text-(--primary) text-3xl sm:text-4xl leading-[0.88] no-underline transition-all duration-300 hover:font-extrabold uppercase block tracking-tighter break-words ${
                   isActive ? 'font-extrabold' : 'font-light'
                 }`}
               >
@@ -113,45 +109,29 @@ const navEntries = Object.entries(t.nav).filter(([key]) => isIndex || key !== 'l
 <!-- ======================================================== -->
 <!-- 2. TABLET Y ORDENADORES (>= md): Navegación fija original -->
 <!-- ======================================================== -->
-<nav class="hidden md:flex fixed inset-y-0 left-0 w-[40%] z-50 p-6 md:p-8 lg:p-10 flex-col justify-end bg-transparent pointer-events-none overflow-hidden">
+<nav class="hidden md:flex fixed inset-y-0 left-0 w-[40%] z-50 p-6 md:p-8 lg:p-10 flex-col justify-end bg-transparent pointer-events-none">
   <ul
     id="nav-list"
-    class="relative flex flex-col list-none m-0 p-0 gap-1 md:gap-2 pointer-events-auto transition-transform duration-500 ease-in-out"
+    class="relative flex flex-col list-none m-0 p-0 gap-2 md:gap-3 pointer-events-auto transition-transform duration-500 ease-in-out w-full"
   >
     {
-      standardNavEntries.map(([key, label]) => {
+      navEntries.map(([key, label]) => {
         const routeKey = key as keyof typeof t.nav;
         const href = routes[routeKey];
         const normalizedHref = href.split('#')[0].replace(/\/$/, '');
         const isActive = normalizedHref === currentPath;
 
         return (
-          <li class="flex items-center m-0 p-0">
+          <li class="m-0 p-0 w-full">
             <a
               href={href}
-              class={`text-(--primary) text-3xl sm:text-4xl md:text-[4.8vw] lg:text-[5vw] xl:text-[5.3vw] leading-none no-underline transition-all duration-300 hover:font-extrabold uppercase whitespace-nowrap tracking-tighter h-[1.15em] flex items-center m-0 p-0 ${isActive ? 'font-extrabold' : 'font-light'}`}
+              class={`text-(--primary) text-3xl sm:text-4xl md:text-[4.8vw] lg:text-[5vw] xl:text-[5.3vw] leading-[0.88] no-underline transition-all duration-300 hover:font-extrabold uppercase tracking-tighter block m-0 p-0 break-words ${isActive ? 'font-extrabold' : 'font-light'}`}
             >
               {label}
             </a>
           </li>
         );
       })
-    }
-    {
-      isIndex && lastProjectEntry && (
-        <li
-          id="nav-last-project"
-          class="absolute top-full left-0 w-full mt-1 md:mt-2 opacity-0 pointer-events-none transition-opacity duration-500 flex items-center m-0 p-0"
-        >
-          <a
-            id="nav-last-project-link"
-            href={routes.lastProject}
-            class="text-(--primary) text-3xl sm:text-4xl md:text-[4.8vw] lg:text-[5vw] xl:text-[5.3vw] leading-none no-underline transition-all duration-300 hover:font-extrabold uppercase whitespace-nowrap tracking-tighter h-[1.15em] flex items-center m-0 p-0 font-light"
-          >
-            {lastProjectEntry[1]}
-          </a>
-        </li>
-      )
     }
   </ul>
 </nav>
@@ -164,56 +144,9 @@ const navEntries = Object.entries(t.nav).filter(([key]) => isIndex || key !== 'l
     width: 1.25rem;
     transform: translateY(-5px) rotate(-45deg);
   }
-  #nav-list.show-last-project {
-    transform: translateY(calc(-1.15em - 0.5rem));
-  }
-  #nav-list.show-last-project #nav-last-project {
-    opacity: 1;
-    pointer-events: auto;
-  }
 </style>
 
 <script>
-  let navObserver: IntersectionObserver | null = null;
-
-  // Lógica de escritorio original (IntersectionObserver en index para #last-project)
-  function setupDesktopNav() {
-    if (navObserver) {
-      navObserver.disconnect();
-      navObserver = null;
-    }
-
-    const navList = document.getElementById('nav-list');
-    const lastProjectNav = document.getElementById('nav-last-project');
-    const lastProjectLink = document.getElementById('nav-last-project-link');
-    const isIndex = document.documentElement.dataset.page === 'index';
-
-    if (!lastProjectNav || !navList) return;
-
-    if (isIndex) {
-      navObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            navList.classList.add('show-last-project');
-            lastProjectLink?.classList.add('font-extrabold');
-            lastProjectLink?.classList.remove('font-light');
-          } else {
-            if (entry.boundingClientRect.top > 0) {
-              navList.classList.remove('show-last-project');
-              lastProjectLink?.classList.remove('font-extrabold');
-              lastProjectLink?.classList.add('font-light');
-            }
-          }
-        });
-      }, {
-        threshold: 0.2
-      });
-
-      const section = document.getElementById('last-project');
-      if (section) navObserver.observe(section);
-    }
-  }
-
   // Lógica de panel desplegable para móviles
   function setupMobileDrawer() {
     const toggle = document.getElementById('drawer-toggle');
@@ -290,17 +223,12 @@ const navEntries = Object.entries(t.nav).filter(([key]) => isIndex || key !== 'l
         closeDrawer();
         window.removeEventListener('keydown', handleKeyDown);
         window.removeEventListener('resize', handleResize);
-        if (navObserver) {
-          navObserver.disconnect();
-          navObserver = null;
-        }
       },
       { once: true }
     );
   }
 
   function initNav() {
-    setupDesktopNav();
     setupMobileDrawer();
   }
 
