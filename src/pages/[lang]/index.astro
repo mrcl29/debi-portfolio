@@ -1,88 +1,97 @@
 ---
 // src/pages/[lang]/index.astro
-import MainLayout from '@/layouts/MainLayout.astro';
-import { languages } from '@/i18n/ui';
-import { useTranslations } from '@/i18n/utils';
-import { Image } from 'astro:assets';
+import MainLayout from "@/layouts/MainLayout.astro";
+import { languages } from "@/i18n/ui";
+import { useTranslations } from "@/i18n/utils";
+import { Image } from "astro:assets";
+import ImagePrefetcher from "@/components/ImagePrefetcher.astro";
 
 export function getStaticPaths() {
-  return Object.keys(languages).map((lang) => {
-      return { params: { lang } };
-  });
+    return Object.keys(languages).map((lang) => {
+        return { params: { lang } };
+    });
 }
 const { lang } = Astro.params;
 const t = useTranslations(lang);
 
 // Imágenes optimizadas para la sección de "Último Proyecto"
 const lastProjectImages = [
-  '/assets/art_direction/editorial_de_moda/1.webp',
-  '/assets/art_direction/editorial_de_moda/2.webp',
-  '/assets/art_direction/editorial_de_moda/3.webp',
-  '/assets/art_direction/editorial_de_moda/4.webp',
+    "/assets/projects/art_direction/editorial_de_moda/1.webp",
+    "/assets/projects/art_direction/editorial_de_moda/2.webp",
+    "/assets/projects/art_direction/editorial_de_moda/3.webp",
+    "/assets/projects/art_direction/editorial_de_moda/4.webp",
 ];
 ---
 
 <MainLayout title={t.pages.index.title} lang={lang as string} isIndex={true}>
-  <div class="index-content-container relative z-40 p-6 pt-24 md:p-16 flex flex-col min-h-screen bg-transparent animate-in">
-    <div class="spacer grow min-h-screen"></div>
+    <ImagePrefetcher lang={lang} />
+    <div
+        class="index-content-container relative z-40 p-6 pt-24 md:p-16 flex flex-col min-h-screen bg-transparent animate-in"
+    >
+        <div class="spacer grow min-h-screen"></div>
 
-    <!-- Last Project Section -->
-    <section id="last-project" class="min-h-screen py-32 flex flex-col gap-16">
-      <!-- <h2 id="last-project-title" class="text-(--primary) text-[7vw] md:text-[7vw] font-extrabold leading-[0.8] uppercase block tracking-tighter mb-16 opacity-0" data-text={t.nav.lastProject}>
+        <!-- Last Project Section -->
+        <section
+            id="last-project"
+            class="min-h-screen py-32 flex flex-col gap-16"
+        >
+            <!-- <h2 id="last-project-title" class="text-(--primary) text-[7vw] md:text-[7vw] font-extrabold leading-[0.8] uppercase block tracking-tighter mb-16 opacity-0" data-text={t.nav.lastProject}>
       </h2> -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {
-          lastProjectImages.map((src, index) => (
-            <div class={`overflow-hidden ${index % 2 === 0 ? 'mt-0' : 'md:mt-32'}`}>
-              <Image
-                src={src}
-                alt={`Project image ${index + 1}`}
-                width={800}
-                height={1200}
-                loading={index < 2 ? "eager" : "lazy"}
-                class="w-full h-auto grayscale hover:grayscale-0 transition-all duration-700"
-              />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {
+                    lastProjectImages.map((src, index) => (
+                        <div
+                            class={`overflow-hidden ${index % 2 === 0 ? "mt-0" : "md:mt-32"}`}
+                        >
+                            <Image
+                                src={src}
+                                alt={`Project image ${index + 1}`}
+                                width={800}
+                                height={1200}
+                                loading={index < 2 ? "eager" : "lazy"}
+                                class="w-full h-auto grayscale hover:grayscale-0 transition-all duration-700"
+                            />
+                        </div>
+                    ))
+                }
             </div>
-          ))
-        }
-      </div>
-    </section>
-  </div>
+        </section>
+    </div>
 </MainLayout>
 
 <script>
-  async function initIndexTypewriter() {
-    const typeTitle = async (element: HTMLElement) => {
-      const fullText = element.getAttribute('data-text');
-      if (!fullText) return;
-      element.textContent = '';
-      element.classList.remove('opacity-0');
-      for (let i = 0; i < fullText.length; i++) {
-        element.textContent += fullText.charAt(i);
-        await new Promise(r => setTimeout(r, 40));
-      }
-    };
+    async function initIndexTypewriter() {
+        const typeTitle = async (element: HTMLElement) => {
+            const fullText = element.getAttribute("data-text");
+            if (!fullText) return;
+            element.textContent = "";
+            element.classList.remove("opacity-0");
+            for (let i = 0; i < fullText.length; i++) {
+                element.textContent += fullText.charAt(i);
+                await new Promise((r) => setTimeout(r, 40));
+            }
+        };
 
-    const title = document.getElementById('last-project-title');
-    if (title) await typeTitle(title);
-  }
+        const title = document.getElementById("last-project-title");
+        if (title) await typeTitle(title);
+    }
 
-  document.addEventListener('astro:page-load', initIndexTypewriter);
+    document.addEventListener("astro:page-load", initIndexTypewriter);
 </script>
 
 <style>
-  .animate-in {
-    animation: fadeInSlide 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  }
+    .animate-in {
+        animation: fadeInSlide 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
 
-  @keyframes fadeInSlide {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
+    @keyframes fadeInSlide {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 </style>
