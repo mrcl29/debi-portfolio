@@ -1,0 +1,112 @@
+---
+// src/components/ImagePrefetcher.astro
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'es' } = Astro.props;
+---
+
+<script is:inline define:vars={{ lang }}>
+  (() => {
+    // 1. Avoid re-prefetching within the same user session
+    if (sessionStorage.getItem('portfolio_images_prefetched')) return;
+
+    // 2. Respect Data-Saver mode and slow 2G connections
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (conn) {
+      if (conn.saveData) return;
+      if (conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g') return;
+    }
+
+    // 3. Helper to defer tasks to browser idle time
+    const runWhenIdle = (callback) => {
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(callback, { timeout: 6000 });
+      } else {
+        setTimeout(callback, 1500);
+      }
+    };
+
+    const startPrefetch = () => {
+      if (sessionStorage.getItem('portfolio_images_prefetched')) return;
+
+      runWhenIdle(async () => {
+        try {
+          const currentLang = lang || 'es';
+          const targetRoutes = [
+            `/${currentLang}/projects`,
+            `/${currentLang}/about-me`,
+            `/${currentLang}/last-project`,
+            `/${currentLang}/inspo`,
+          ];
+
+          const imageUrls = new Set();
+          const parser = new DOMParser();
+
+          // Fetch HTML of destination routes sequentially with low priority
+          for (const route of targetRoutes) {
+            try {
+              const res = await fetch(route, { priority: 'low' });
+              if (!res.ok) continue;
+              const html = await res.text();
+              const doc = parser.parseFromString(html, 'text/html');
+
+              // Extract all image sources
+              const imgs = doc.querySelectorAll('img');
+              imgs.forEach((img) => {
+                const src = img.getAttribute('src');
+                if (src && !src.startsWith('data:')) {
+                  const resolved = new URL(src, window.location.origin).href;
+                  imageUrls.add(resolved);
+                }
+              });
+            } catch {
+              // Ignore route fetch failures silently
+            }
+          }
+
+          const urls = Array.from(imageUrls);
+          if (urls.length === 0) return;
+
+          // Controlled sequential preloading of images during idle frames
+          let idx = 0;
+          const preloadNext = () => {
+            if (idx >= urls.length) {
+              sessionStorage.setItem('portfolio_images_prefetched', 'true');
+              return;
+            }
+
+            runWhenIdle(() => {
+              const img = new Image();
+              img.decoding = 'async';
+              const next = () => {
+                idx++;
+                // 60ms breather between images so the network stays responsive for user interactions
+                setTimeout(preloadNext, 60);
+              };
+              img.onload = next;
+              img.onerror = next;
+              img.src = urls[idx];
+            });
+          };
+
+          preloadNext();
+        } catch {
+          // Graceful fallback for unexpected errors
+        }
+      });
+    };
+
+    // Wait until initial page load + grace period for intro animations
+    const schedule = () => {
+      setTimeout(startPrefetch, 2500);
+    };
+
+    if (document.readyState === 'complete') {
+      schedule();
+    } else {
+      window.addEventListener('load', schedule, { once: true });
+    }
+  })();
+</script>
